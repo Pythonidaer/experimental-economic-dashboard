@@ -1,5 +1,9 @@
 # Cursor Prompt Templates
 
+Do not try to build the final version all at once.
+Implement only the current phase cleanly.
+Prefer simple, readable code over clever abstractions.
+
 ## Prompt: Read docs first
 Before making changes, read:
 - docs/project-overview.md
@@ -8,6 +12,10 @@ Before making changes, read:
 - docs/implementation-plan.md
 - docs/done-criteria.md
 - docs/decisions.md
+
+Supabase password: @VBQ4y2#a6%%J#4
+
+
 
 Then explain:
 1. what you think this project is

@@ -1,36 +1,76 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Experimental Economic Dashboard
 
-## Getting Started
+Next.js (App Router) dashboard for **state-level economic metrics**: MapLibre map, TanStack Table, Nivo charts, and Supabase. See `docs/` for product and architecture notes.
 
-First, run the development server:
+## Requirements
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+- **Node.js** 20+ (matches typical Vercel runtimes)
+- **npm** (or compatible package manager)
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Local setup
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+1. Clone the repo and install dependencies:
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+   ```bash
+   npm install
+   ```
 
-## Learn More
+2. Environment variables — copy the example file and fill in values:
 
-To learn more about Next.js, take a look at the following resources:
+   ```bash
+   cp .env.example .env.local
+   ```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+   | Variable | Required for | Notes |
+   |----------|----------------|--------|
+   | `NEXT_PUBLIC_SUPABASE_URL` | Table, Charts, Map metrics panel | Project **Settings → API → Project URL** |
+   | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Same | **anon public** key (not the service role key) |
+   | `NEXT_PUBLIC_SITE_URL` | Optional | Canonical URL for metadata / sitemap; on Vercel, `VERCEL_URL` is used if unset |
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+3. Ensure your Supabase project has a **`state_trade_metrics`** table (and seed data) consistent with `docs/data-model.md`.
 
-## Deploy on Vercel
+4. Run the dev server:
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+   ```bash
+   npm run dev
+   ```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+   Open [http://localhost:3000](http://localhost:3000). The **Dashboard** route is at `/dashboard`.
+
+## Scripts
+
+| Command | Purpose |
+|---------|---------|
+| `npm run dev` | Development server (Turbopack) |
+| `npm run build` | Production build |
+| `npm run start` | Run production build locally |
+| `npm run lint` | ESLint |
+
+## Deploying to Vercel (with Supabase)
+
+1. Push the repository to GitHub (or GitLab / Bitbucket) and import the project in [Vercel](https://vercel.com).
+2. In the Vercel project **Settings → Environment Variables**, add at least:
+   - `NEXT_PUBLIC_SUPABASE_URL`
+   - `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+3. Optionally set `NEXT_PUBLIC_SITE_URL` to your production domain (e.g. `https://app.example.com`) so Open Graph and `sitemap.xml` use the correct origin.
+4. Deploy. After the first deployment, confirm the **Map** tab loads GeoJSON from `/geo/us-states.json` and that **Table** / **Charts** load when Supabase env vars are present.
+
+If Supabase variables are missing or invalid, an **amber configuration banner** appears at the top of the app and data queries show a clear error instead of failing opaquely.
+
+## Security notes
+
+- Only **anon** keys are used in the browser. Never commit **service role** keys or add them as `NEXT_PUBLIC_*` variables.
+- Row Level Security (RLS) and policies in Supabase should match how exposed your dataset is meant to be.
+
+## Project layout (high level)
+
+- `src/app/` — routes, layouts, metadata, `icon.svg`, `robots.ts`, `sitemap.ts`
+- `src/features/economic-data/` — hooks, queries, table/chart UI tied to `state_trade_metrics`
+- `src/components/map/` — MapLibre US states map and details panel
+- `src/lib/supabase/` — env validation and browser / server clients
+- `public/geo/` — US states GeoJSON
+- `docs/` — architecture, data model, implementation plan
+
+## License
+
+Private / use per your organization’s policy.
