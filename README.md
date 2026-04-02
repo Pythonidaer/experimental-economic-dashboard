@@ -24,7 +24,7 @@ Next.js (App Router) dashboard for **state-level economic metrics**: MapLibre ma
    | Variable | Required for | Notes |
    |----------|----------------|--------|
    | `NEXT_PUBLIC_SUPABASE_URL` | Table, Charts, Map metrics panel | Project **Settings → API → Project URL** |
-   | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Same | **anon public** key (not the service role key) |
+   | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Same | **Publishable** key (`sb_publishable_…`, not the service role key) |
    | `NEXT_PUBLIC_SITE_URL` | Optional | Canonical URL for metadata / sitemap; on Vercel, `VERCEL_URL` is used if unset |
 
 3. Ensure your Supabase project has a **`state_trade_metrics`** table (and seed data) consistent with `docs/data-model.md`.
@@ -59,7 +59,7 @@ If Supabase variables are missing or invalid, an **amber configuration banner** 
 
 ## Security notes
 
-- Only **anon** keys are used in the browser. Never commit **service role** keys or add them as `NEXT_PUBLIC_*` variables.
+- Only the **publishable** key (`sb_publishable_…`) is used in the browser. Never commit **service role** keys or add them as `NEXT_PUBLIC_*` variables.
 - Row Level Security (RLS) and policies in Supabase should match how exposed your dataset is meant to be.
 
 ## Project layout (high level)

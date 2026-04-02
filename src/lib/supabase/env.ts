@@ -1,9 +1,16 @@
+/**
+ * Supabase browser config. Use direct `process.env.NEXT_PUBLIC_*` reads only —
+ * Next.js inlines these at build time; dynamic keys like `process.env[name]` are not
+ * replaced and break in production client bundles.
+ */
+
 export const SUPABASE_ENV = {
   urlVar: "NEXT_PUBLIC_SUPABASE_URL",
   anonKeyVar: "NEXT_PUBLIC_SUPABASE_ANON_KEY",
 } as const;
 
-const { urlVar, anonKeyVar } = SUPABASE_ENV;
+/** Publishable key prefix from Supabase Dashboard → Settings → API (new API keys). */
+const SUPABASE_PUBLISHABLE_KEY_PREFIX = "sb_publishable_" as const;
 
 function isLocalHostname(hostname: string): boolean {
   return (
@@ -14,7 +21,6 @@ function isLocalHostname(hostname: string): boolean {
   );
 }
 
-/** True when `url` is https, or http on localhost (local Supabase CLI). */
 export function isValidPublicSupabaseUrl(url: string): boolean {
   try {
     const parsed = new URL(url);
@@ -26,45 +32,52 @@ export function isValidPublicSupabaseUrl(url: string): boolean {
   }
 }
 
-/**
- * Fast check for browser and server: both vars set and URL shape is acceptable.
- * Does not throw (use for UI banners and query preflight).
- */
+export function isSupabasePublishableKey(key: string): boolean {
+  return key.startsWith(SUPABASE_PUBLISHABLE_KEY_PREFIX);
+}
+
 export function isSupabasePublicConfigReady(): boolean {
-  const url = process.env[urlVar]?.trim();
-  const key = process.env[anonKeyVar]?.trim();
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL?.trim();
+  const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY?.trim();
+
   if (!url || !key) return false;
   if (!isValidPublicSupabaseUrl(url)) return false;
-  if (key.length < 32) return false;
+  if (!isSupabasePublishableKey(key)) return false;
   return true;
 }
 
 export function getSupabaseUrl(): string {
-  const url = process.env[urlVar]?.trim();
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL?.trim();
+
   if (!url) {
     throw new Error(
-      `${urlVar} is not set. Copy .env.example to .env.local and add your Supabase project URL.`,
+      `${SUPABASE_ENV.urlVar} is not set. Copy .env.example to .env.local and add your Supabase project URL.`,
     );
   }
+
   if (!isValidPublicSupabaseUrl(url)) {
     throw new Error(
-      `${urlVar} must be a valid https URL, or http://127.0.0.1 / http://localhost for local Supabase.`,
+      `${SUPABASE_ENV.urlVar} must be a valid https URL, or http://127.0.0.1 / http://localhost for local Supabase.`,
     );
   }
+
   return url;
 }
 
 export function getSupabaseAnonKey(): string {
-  const key = process.env[anonKeyVar]?.trim();
+  const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY?.trim();
+
   if (!key) {
     throw new Error(
-      `${anonKeyVar} is not set. Copy .env.example to .env.local and add the anon (publishable) key from Supabase → Settings → API.`,
+      `${SUPABASE_ENV.anonKeyVar} is not set. Copy .env.example to .env.local and add the publishable key from Supabase → Settings → API.`,
     );
   }
-  if (key.length < 32) {
+
+  if (!isSupabasePublishableKey(key)) {
     throw new Error(
-      `${anonKeyVar} looks too short to be a real Supabase anon key. Check your environment value.`,
+      `${SUPABASE_ENV.anonKeyVar} must be a Supabase publishable key (starts with ${SUPABASE_PUBLISHABLE_KEY_PREFIX}).`,
     );
   }
+
   return key;
 }
