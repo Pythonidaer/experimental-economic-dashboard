@@ -11,7 +11,9 @@ import {
   formatTradeCurrency,
   formatTradeCurrencyCompact,
 } from "@/features/economic-data/utils/format-trade-currency";
+import { StateTradeTotalByStateA11yTable } from "@/features/economic-data/components/state-trade-total-by-state-a11y-table";
 import { buildTotalTradeByStateBarData } from "@/features/economic-data/utils/total-trade-by-state-chart-data";
+import { DashboardRelatedConcepts } from "@/components/knowledge/dashboard-related-concepts";
 import { useMediaQuery } from "@/lib/hooks/use-media-query";
 
 export function StateTradeTotalByStateChart() {
@@ -53,6 +55,7 @@ export function StateTradeTotalByStateChart() {
         Total trade value by state (summed across all years in the dataset). Same source
         as the map and table: <code className="text-xs">state_trade_metrics</code>.
       </p>
+      <DashboardRelatedConcepts tab="charts" />
 
       <div className="mt-4">
         {isPending ? <ViewLoading message="Loading chart data…" /> : null}
@@ -66,77 +69,74 @@ export function StateTradeTotalByStateChart() {
           <ViewEmpty description="Add rows to state_trade_metrics to see the chart." />
         ) : null}
         {isSuccess && data.length > 0 ? (
-          <figure
-            aria-label="Horizontal bar chart of total trade value by state, highest values at the top"
-            className="not-prose"
-          >
-            <figcaption className="sr-only">
-              Bar chart comparing total trade value for each US state. Values are summed
-              across every year in the database for that state.
-            </figcaption>
-            <div className="max-h-[min(72dvh,52rem)] overflow-y-auto overflow-x-hidden rounded-md border bg-muted/20 sm:max-h-[min(70vh,52rem)]">
-              <div className="min-h-[280px] w-full sm:min-h-[360px]" style={{ height: chartHeight }}>
-                <ResponsiveBar
-                  animate
-                  axisBottom={{
-                    format: (v) => formatTradeCurrencyCompact(Number(v)),
-                    legend: "Total trade (USD)",
-                    legendOffset: isNarrow ? 48 : 40,
-                    tickRotation: isNarrow ? -28 : 0,
-                  }}
-                  axisLeft={{
-                    tickSize: 0,
-                    tickPadding: isNarrow ? 4 : 8,
-                  }}
-                  axisRight={null}
-                  axisTop={null}
-                  barAriaLabel={(d) =>
-                    `${d.indexValue}, ${formatTradeCurrency(Number(d.value))} total trade`
-                  }
-                  borderRadius={2}
-                  borderColor="#1e3a8a"
-                  borderWidth={1}
-                  // Ordinal schemes like "blues" start from near-white — poor contrast on light UI.
-                  colors={() => "#2563eb"}
-                  data={nivoData}
-                  enableGridY
-                  enableLabel={false}
-                  indexBy="stateName"
-                  isFocusable
-                  keys={["value"]}
-                  layout="horizontal"
-                  margin={barMargins}
-                  padding={isNarrow ? 0.38 : 0.42}
-                  role="img"
-                  theme={{
-                    text: { fill: "var(--foreground)" },
-                    axis: {
-                      ticks: {
-                        text: {
-                          fill: "var(--muted-foreground)",
-                          fontSize: tickFontSize,
+          <div className="not-prose">
+            {/* SVG chart is decorative for AT; values are in StateTradeTotalByStateA11yTable. */}
+            <div aria-hidden="true">
+              <div className="max-h-[min(72dvh,52rem)] overflow-y-auto overflow-x-hidden rounded-md border bg-muted/20 sm:max-h-[min(70vh,52rem)]">
+                <div className="min-h-[280px] w-full sm:min-h-[360px]" style={{ height: chartHeight }}>
+                  <ResponsiveBar
+                    animate
+                    axisBottom={{
+                      format: (v) => formatTradeCurrencyCompact(Number(v)),
+                      legend: "Total trade (USD)",
+                      legendOffset: isNarrow ? 48 : 40,
+                      tickRotation: isNarrow ? -28 : 0,
+                    }}
+                    axisLeft={{
+                      tickSize: 0,
+                      tickPadding: isNarrow ? 4 : 8,
+                    }}
+                    axisRight={null}
+                    axisTop={null}
+                    borderRadius={2}
+                    borderColor="#1e3a8a"
+                    borderWidth={1}
+                    // Ordinal schemes like "blues" start from near-white — poor contrast on light UI.
+                    colors={() => "#2563eb"}
+                    data={nivoData}
+                    enableGridY
+                    enableLabel={false}
+                    indexBy="stateName"
+                    isFocusable={false}
+                    keys={["value"]}
+                    layout="horizontal"
+                    margin={barMargins}
+                    padding={isNarrow ? 0.38 : 0.42}
+                    theme={{
+                      text: { fill: "var(--foreground)" },
+                      axis: {
+                        ticks: {
+                          text: {
+                            fill: "var(--muted-foreground)",
+                            fontSize: tickFontSize,
+                          },
+                        },
+                        legend: {
+                          text: { fontSize: isNarrow ? 11 : 12 },
                         },
                       },
-                      legend: {
-                        text: { fontSize: isNarrow ? 11 : 12 },
-                      },
-                    },
-                    grid: { line: { stroke: "var(--border)" } },
-                  }}
-                  tooltip={({ data: row, value }) => (
-                    <div className="rounded border border-border bg-popover px-3 py-2 text-xs text-popover-foreground shadow-md">
-                      <strong className="font-medium">{row.stateName}</strong>{" "}
-                      <span className="text-muted-foreground">({row.stateCode})</span>
-                      <div className="mt-1 tabular-nums">
-                        {formatTradeCurrency(Number(value))}
+                      grid: { line: { stroke: "var(--border)" } },
+                    }}
+                    tooltip={({ data: row, value }) => (
+                      <div className="rounded border border-border bg-popover px-3 py-2 text-xs text-popover-foreground shadow-md">
+                        <strong className="font-medium">{row.stateName}</strong>{" "}
+                        <span className="text-muted-foreground">({row.stateCode})</span>
+                        <div className="mt-1 tabular-nums">
+                          {formatTradeCurrency(Number(value))}
+                        </div>
                       </div>
-                    </div>
-                  )}
-                  valueFormat={(v) => formatTradeCurrency(Number(v))}
-                />
+                    )}
+                    valueFormat={(v) => formatTradeCurrency(Number(v))}
+                  />
+                </div>
               </div>
             </div>
-          </figure>
+            <StateTradeTotalByStateA11yTable
+              data={nivoData}
+              describedBy="chart-summary"
+              labelledBy="chart-heading"
+            />
+          </div>
         ) : null}
       </div>
     </section>

@@ -9,3 +9,14 @@ export const DASHBOARD_TABS = [
 export type DashboardTabValue = (typeof DASHBOARD_TABS)[number]["value"];
 
 export const DEFAULT_DASHBOARD_TAB: DashboardTabValue = "overview";
+
+export function parseDashboardTabParam(
+  raw: string | null | undefined,
+): DashboardTabValue {
+  for (const { value } of DASHBOARD_TABS) {
+    if (raw === value) {
+      return value;
+    }
+  }
+  return DEFAULT_DASHBOARD_TAB;
+}

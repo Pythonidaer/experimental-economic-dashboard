@@ -7,6 +7,8 @@ import { ViewError } from "@/components/data-view/view-error";
 import { ViewLoading } from "@/components/data-view/view-loading";
 import { useStateTradeMetrics } from "@/features/economic-data/hooks/use-state-trade-metrics";
 
+import { DashboardRelatedConcepts } from "@/components/knowledge/dashboard-related-concepts";
+
 import { StateTradeMetricsDataTable } from "./state-trade-metrics-data-table";
 import { StateTradeMetricsTableFilter } from "./state-trade-metrics-table-filter";
 
@@ -27,6 +29,7 @@ export function StateTradeMetricsTable() {
         Supabase. Sort columns with the header controls; filter by state name or code
         client-side.
       </p>
+      <DashboardRelatedConcepts tab="table" />
 
       <div className="mt-4">
         {isPending ? <ViewLoading message="Loading state trade metrics…" /> : null}
