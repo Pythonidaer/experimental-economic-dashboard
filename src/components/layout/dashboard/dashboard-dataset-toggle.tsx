@@ -9,6 +9,8 @@ type DashboardDatasetToggleProps = {
   onChange: (value: DashboardDataset) => void;
   idPrefix: string;
   className?: string;
+  /** `bar`: no top margin, tighter grouping for horizontal control rows */
+  variant?: "default" | "bar";
 };
 
 export function DashboardDatasetToggle({
@@ -16,18 +18,28 @@ export function DashboardDatasetToggle({
   onChange,
   idPrefix,
   className,
+  variant = "default",
 }: DashboardDatasetToggleProps) {
   const labelId = `${idPrefix}-dataset-label`;
   const groupId = `${idPrefix}-dataset`;
+  const isBar = variant === "bar";
 
   return (
-    <div className={cn("mt-4", className)}>
-      <p className="text-sm font-medium text-foreground" id={labelId}>
+    <div className={cn(!isBar && "mt-4", className)}>
+      <p
+        className={cn(
+          isBar ? "sr-only" : "text-sm font-medium text-foreground",
+        )}
+        id={labelId}
+      >
         Data
       </p>
       <div
         aria-labelledby={labelId}
-        className="mt-2 inline-flex flex-wrap gap-2"
+        className={cn(
+          "inline-flex flex-wrap gap-2",
+          !isBar && "mt-2",
+        )}
         id={groupId}
         role="radiogroup"
       >

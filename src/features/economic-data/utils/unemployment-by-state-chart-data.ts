@@ -22,7 +22,7 @@ export function buildLatestUnemploymentByStateBarData(
       byCode.set(row.state_code, {
         stateName: row.state_name,
         stateCode: row.state_code,
-        value: row.unemployment_rate,
+        value: Number(row.unemployment_rate),
         year: row.year,
       });
     }

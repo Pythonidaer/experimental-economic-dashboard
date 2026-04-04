@@ -89,12 +89,21 @@ export function DashboardMetricsTable() {
         laborQuery.isSuccess &&
         laborQuery.data.length > 0 ? (
           <>
+            <p
+              className="mt-3 max-w-2xl text-sm text-muted-foreground"
+              id="table-labor-context"
+            >
+              State unemployment rates (2024 annual average). Sorted to highlight
+              highest unemployment states.
+            </p>
             <StateMetricsTableFilter
               id="table-labor-filter"
+              label="Filter by state name"
               value={laborFilter}
               onChange={setLaborFilter}
             />
             <StateLaborMetricsDataTable
+              aria-describedby="table-labor-context"
               data={laborQuery.data}
               globalFilter={laborFilter}
               onGlobalFilterChange={setLaborFilter}

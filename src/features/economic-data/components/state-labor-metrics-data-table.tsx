@@ -13,10 +13,11 @@ import {
 import { useState } from "react";
 
 import type { StateLaborMetricRow } from "@/features/economic-data/types/database";
+import { cn } from "@/lib/utils";
 
 import { stateLaborMetricColumns } from "./state-labor-metrics-table-columns";
 
-const stateNameOrCodeGlobalFilter: FilterFn<StateLaborMetricRow> = (
+const stateNameOnlyGlobalFilter: FilterFn<StateLaborMetricRow> = (
   row,
   _columnId,
   filterValue,
@@ -25,28 +26,26 @@ const stateNameOrCodeGlobalFilter: FilterFn<StateLaborMetricRow> = (
     .toLowerCase()
     .trim();
   if (!q) return true;
-  const { state_name, state_code } = row.original;
-  return (
-    state_name.toLowerCase().includes(q) ||
-    state_code.toLowerCase().includes(q)
-  );
+  return row.original.state_name.toLowerCase().includes(q);
 };
 
 type StateLaborMetricsDataTableProps = {
   "aria-label"?: string;
+  "aria-describedby"?: string;
   data: StateLaborMetricRow[];
   globalFilter: string;
   onGlobalFilterChange: (value: string) => void;
 };
 
 export function StateLaborMetricsDataTable({
-  "aria-label": ariaLabel = "State labor metrics by state and year",
+  "aria-label": ariaLabel = "State unemployment rates, 2024",
+  "aria-describedby": ariaDescribedBy,
   data,
   globalFilter,
   onGlobalFilterChange,
 }: StateLaborMetricsDataTableProps) {
   const [sorting, setSorting] = useState<SortingState>([
-    { id: "year", desc: true },
+    { id: "unemployment_rate", desc: true },
   ]);
 
   /* eslint-disable-next-line react-hooks/incompatible-library -- TanStack Table headless store API */
@@ -63,7 +62,7 @@ export function StateLaborMetricsDataTable({
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
-    globalFilterFn: stateNameOrCodeGlobalFilter,
+    globalFilterFn: stateNameOnlyGlobalFilter,
   });
 
   const rows = table.getRowModel().rows;
@@ -73,14 +72,17 @@ export function StateLaborMetricsDataTable({
   return (
     <div className="-mx-px touch-pan-x overflow-x-auto rounded-md border">
       <table
+        aria-describedby={ariaDescribedBy}
         aria-label={ariaLabel}
-        className="w-full min-w-[36rem] text-left text-sm sm:min-w-[44rem]"
+        className="w-full min-w-[20rem] text-left text-sm"
       >
         <thead className="border-b bg-muted/50">
           {table.getHeaderGroups().map((headerGroup) => (
             <tr key={headerGroup.id}>
               {headerGroup.headers.map((header) => {
                 const sorted = header.column.getIsSorted();
+                const align = header.column.columnDef.meta?.align ?? "left";
+                const alignRight = align === "right";
                 const ariaSort =
                   sorted === "asc"
                     ? "ascending"
@@ -93,13 +95,21 @@ export function StateLaborMetricsDataTable({
                 return (
                   <th
                     aria-sort={ariaSort}
-                    className="px-2 py-2 font-medium sm:px-3"
+                    className={cn(
+                      "px-2 py-2 font-medium sm:px-3",
+                      alignRight ? "text-right" : "text-left",
+                    )}
                     key={header.id}
                     scope="col"
                   >
                     {header.isPlaceholder ? null : header.column.getCanSort() ? (
                       <button
-                        className="-ml-1 inline-flex min-h-10 min-w-0 items-center gap-1 rounded-sm px-1 py-1 text-left hover:bg-muted/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring sm:min-h-8 sm:py-0.5"
+                        className={cn(
+                          "inline-flex min-h-10 min-w-0 items-center gap-1 rounded-sm px-1 py-1 hover:bg-muted/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring sm:min-h-8 sm:py-0.5",
+                          alignRight
+                            ? "ms-auto w-full justify-end text-right"
+                            : "-ml-1 justify-start text-left",
+                        )}
                         type="button"
                         onClick={header.column.getToggleSortingHandler()}
                       >
@@ -130,7 +140,7 @@ export function StateLaborMetricsDataTable({
                 className="px-2 py-10 text-center text-sm text-muted-foreground sm:px-3"
                 colSpan={stateLaborMetricColumns.length}
               >
-                No rows match your filter. Try a different state name or code.
+                No rows match your filter. Try a different state name.
               </td>
             </tr>
           ) : (
@@ -144,7 +154,10 @@ export function StateLaborMetricsDataTable({
                     cell.column.columnDef.meta?.align === "right";
                   return (
                     <td
-                      className={`px-2 py-2 tabular-nums sm:px-3 ${alignRight ? "text-right" : ""}`}
+                      className={cn(
+                        "px-2 py-2 sm:px-3",
+                        alignRight ? "text-right tabular-nums" : "text-left",
+                      )}
                       key={cell.id}
                     >
                       {flexRender(cell.column.columnDef.cell, cell.getContext())}

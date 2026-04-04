@@ -26,14 +26,19 @@ export function DashboardChartsPanel() {
       <p className="mt-2 max-w-2xl text-sm text-muted-foreground" id={CHART_SUMMARY_ID}>
         {dataset === "trade"
           ? "Total trade by state (all years in the data added up). Useful for spotting which states move the most goods internationally."
-          : "Unemployment rate by state, using the most recent year available in the data for each state."}
+          : "Unemployment rate by state (2024 annual average). Sorted highest to lowest."}
       </p>
 
-      <DashboardDatasetToggle
-        idPrefix="charts"
-        value={dataset}
-        onChange={setDataset}
-      />
+      {dataset === "trade" ? (
+        <div className="mt-3">
+          <DashboardDatasetToggle
+            idPrefix="charts"
+            value={dataset}
+            variant="bar"
+            onChange={setDataset}
+          />
+        </div>
+      ) : null}
 
       <div className="mt-4">
         {dataset === "trade" ? (
@@ -43,8 +48,10 @@ export function DashboardChartsPanel() {
           />
         ) : (
           <LaborUnemploymentByStateChartBody
+            dataset={dataset}
             headingId={CHART_HEADING_ID}
             summaryId={CHART_SUMMARY_ID}
+            onDatasetChange={setDataset}
           />
         )}
       </div>

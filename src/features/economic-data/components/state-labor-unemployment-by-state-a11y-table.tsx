@@ -19,14 +19,12 @@ export function StateLaborUnemploymentByStateA11yTable({
       className="sr-only"
     >
       <caption>
-        Unemployment rate by state using the latest year available for each state in
-        the dataset. Rows are sorted highest to lowest, matching the bar chart.
+        Unemployment rate by state (2024 annual average where available). Row order
+        matches the chart (including sort and filter).
       </caption>
       <thead>
         <tr>
           <th scope="col">State</th>
-          <th scope="col">State code</th>
-          <th scope="col">Year</th>
           <th scope="col">Unemployment rate</th>
         </tr>
       </thead>
@@ -34,8 +32,6 @@ export function StateLaborUnemploymentByStateA11yTable({
         {data.map((row) => (
           <tr key={row.stateCode}>
             <td>{row.stateName}</td>
-            <td>{row.stateCode}</td>
-            <td>{row.year}</td>
             <td>{formatUnemploymentRate(row.value)}</td>
           </tr>
         ))}
