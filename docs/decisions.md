@@ -27,6 +27,11 @@
   - state_trade_metrics  
   - state_labor_metrics  
 
+### Labor data sourcing (current)
+- State **unemployment_rate** values in use (e.g. **2024** state annual averages) come from **BLS Local Area Unemployment Statistics (LAU)**  
+- Unemployment is useful but **not sufficient** for full labor-market picture; richer interpretation will likely require wages, participation, employment levels, and broader economic context as those fields are populated  
+- **`state_labor_metrics` integration** (unemployment-first) was prioritized and delivered **before** broad expansion into many new domains—next-stage work is biased toward **trade enrichment** and **source reliability**, not re-doing the initial labor chart pass  
+
 ---
 
 ### Product Direction
@@ -62,7 +67,7 @@ These are areas of interest to explore once:
 
 ## MVP Constraint
 
-- Build and integrate one dataset fully before expanding  
+- Expand datasets **deliberately**; prefer one clear integration at a time, but the app may host **multiple** flat tables once each has a justified UI path (trade + labor unemployment today)  
 - Do not introduce new domains without:
   - a real dataset  
   - a clear UI use case  

@@ -34,7 +34,8 @@ A structured glossary and topic system that provides context for the dashboardâ€
 
 - Build an accessible dashboard with maps, tables, and charts
 - Use a map-based UI as a primary exploration surface
-- Support data exploration through multiple complementary views
+- Support data exploration through multiple complementary views (including sort/filter/chart exploration and an expanded chart mode where implemented)
+- Pair quantitative views with **interpretive Notes** (e.g. data source context and how to read unemploymentâ€”not placeholder copy)
 - Store and query structured data with Supabase/Postgres
 - Maintain a clean architecture that can later support:
   - real data ingestion
@@ -58,10 +59,11 @@ A structured glossary and topic system that provides context for the dashboardâ€
 
 The current MVP includes:
 - a Next.js App Router app
-- accessible dashboard layout
-- map/table/chart structure
-- seeded Supabase-backed datasets
-- glossary and topic content system
+- accessible dashboard layout with tabs (overview, map, table, charts, notes)
+- map/table/chart structure with **comparative** trade and **labor (unemployment)** views
+- **real** state unemployment for loaded years (**BLS LAU**, e.g. 2024 annual state rates) alongside trade metrics in Supabase
+- chart/table UX refined for exploration (sorting, filtering, expanded chart mode, mobile responsiveness for the current stage)
+- glossary and topic content system (**stabilized for now** at the content-architecture level)
 - alphabetical glossary/topic navigation
 - state-level knowledge + data foundation
 
@@ -70,5 +72,5 @@ The current MVP includes:
 ## Notes
 
 - The dashboard remains the primary long-term focus
-- The glossary/topics layer supports interpretation and learning
-- The project remains experimental, but the implementation should still be clean and production-ready
+- The glossary/topics layer supports interpretation and learning; unemployment **alone** is a limited indicatorâ€”future insight will likely combine labor with wages, participation, population, or job availability as data grows
+- The project remains experimental, but the doc set and implementation should stay clean and production-ready

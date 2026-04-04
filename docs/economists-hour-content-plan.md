@@ -34,9 +34,9 @@ Notes:
 
 ## Execution Priority
 
-The glossary is intended to be built out fully before shifting focus to data ingestion and visualization.
+The glossary remains the **primary knowledge artifact**, but **dashboard data integration** (trade and **labor unemployment from BLS LAU**) now runs in parallel with ongoing glossary/topic work—not strictly “after” a complete glossary.
 
-Topics can be developed alongside or after glossary completion.
+Topics can be developed alongside glossary entries. For the **current stage**, treat glossary **structure and baseline content** as **stabilized**; expand entries incrementally without blocking dashboard or data roadmap tasks.
 
 ---
 
@@ -264,10 +264,11 @@ Related concepts:
 ## MVP Scope
 
 MVP includes:
-- full glossary implementation
+- full glossary implementation (ongoing content growth; architecture stabilized for now)
 - initial topic pages
+- **dashboard** integration of core flat datasets (`state_trade_metrics`, `state_labor_metrics` for unemployment)—already in progress / live for unemployment where loaded
 
-Data integration and visualization follow after glossary completion.
+Further glossary depth and additional datasets proceed incrementally; they are not serialized as “glossary 100% then data.”
 
 ---
 

@@ -73,6 +73,92 @@ function expandedSortSummaryLabel(mode: LaborChartSortMode): string {
   }
 }
 
+function laborChartMobileSortSummaryLabel(mode: LaborChartSortMode): string {
+  switch (mode) {
+    case "high-low":
+      return "High → Low";
+    case "low-high":
+      return "Low → High";
+    case "alphabetical":
+      return "A–Z";
+    default:
+      return mode;
+  }
+}
+
+/** Compact sort UI for mobile toolbars (replaces a native select). */
+function LaborChartMobileSortMenu({
+  instanceId,
+  sortMode,
+  setSortMode,
+}: {
+  instanceId: string;
+  sortMode: LaborChartSortMode;
+  setSortMode: (m: LaborChartSortMode) => void;
+}) {
+  const detailsRef = useRef<HTMLDetailsElement>(null);
+  const summaryDomId = `labor-sort-menu-${instanceId}-summary`;
+  const options: { value: LaborChartSortMode; label: string }[] = [
+    { value: "high-low", label: "High → Low (unemployment)" },
+    { value: "low-high", label: "Low → High (unemployment)" },
+    { value: "alphabetical", label: "A–Z (state name)" },
+  ];
+
+  return (
+    <details
+      ref={detailsRef}
+      className="group/details relative min-w-0 shrink-0"
+    >
+      <summary
+        aria-label={`Sort: ${laborChartMobileSortSummaryLabel(sortMode)}. Change sort order.`}
+        className={cn(
+          "flex h-8 max-w-[9rem] cursor-pointer list-none items-center gap-1 rounded-md border border-input bg-background px-2 text-xs font-medium text-foreground shadow-sm",
+          "outline-none ring-offset-background focus-visible:ring-2 focus-visible:ring-ring",
+          "[&::-webkit-details-marker]:hidden",
+        )}
+        id={summaryDomId}
+      >
+        <span className="shrink-0 text-[0.65rem] font-semibold uppercase tracking-wide text-muted-foreground">
+          Sort
+        </span>
+        <span className="min-w-0 truncate font-medium leading-none">
+          {laborChartMobileSortSummaryLabel(sortMode)}
+        </span>
+        <ChevronDown
+          aria-hidden
+          className="size-3 shrink-0 opacity-60 transition-transform duration-200 group-open/details:rotate-180"
+        />
+      </summary>
+      <div
+        aria-labelledby={summaryDomId}
+        className="absolute left-0 top-full z-30 mt-1 min-w-[11.5rem] rounded-md border border-border bg-popover py-1 shadow-md"
+        role="menu"
+      >
+        {options.map((opt) => (
+          <button
+            aria-checked={sortMode === opt.value}
+            className={cn(
+              "flex w-full px-3 py-2 text-left text-xs",
+              sortMode === opt.value
+                ? "bg-muted font-medium text-foreground"
+                : "text-foreground hover:bg-muted/80",
+            )}
+            key={opt.value}
+            role="menuitemradio"
+            type="button"
+            onClick={() => {
+              setSortMode(opt.value);
+              detailsRef.current?.removeAttribute("open");
+            }}
+          >
+            {opt.label}
+          </button>
+        ))}
+      </div>
+    </details>
+  );
+}
+
 function requestFs(el: Element) {
   const anyEl = el as Element & {
     webkitRequestFullscreen?: () => Promise<void>;
@@ -260,6 +346,7 @@ export function LaborUnemploymentByStateChartBody({
             filterId={inlineFilterId}
             headingId={headingId}
             idPrefix={inlineControlsId}
+            isNarrow={isNarrow}
             nameFilter={nameFilter}
             setNameFilter={setNameFilter}
             sortMode={sortMode}
@@ -275,8 +362,9 @@ export function LaborUnemploymentByStateChartBody({
             </p>
           ) : (
             <>
-              <div className="mt-3">
+              <div className={cn("mt-3", isNarrow && "mt-2")}>
                 <LaborExpandedStatusStrip
+                  compact={isNarrow}
                   insight={expandedInsight}
                   sortLabel={expandedSortLabel}
                   stateCount={visualTopToBottom.length}
@@ -491,9 +579,8 @@ export function LaborUnemploymentByStateChartBody({
   );
 }
 
-/** Inline charts tab: same control structure as expanded dialog, scaled slightly tighter. */
-function LaborChartsPageControlBar({
-  idPrefix,
+/** Desktop-style sectioned controls (also used when inline mobile “Show controls” is open). */
+function LaborChartsPageDesktopPanel({
   headingId,
   dataset,
   onDatasetChange,
@@ -506,7 +593,6 @@ function LaborChartsPageControlBar({
   expandDisabled,
   onResetView,
 }: {
-  idPrefix: string;
   headingId: string;
   dataset: DashboardDataset;
   onDatasetChange: (value: DashboardDataset) => void;
@@ -523,96 +609,330 @@ function LaborChartsPageControlBar({
   const sortSelectId = `${headingId}-labor-chart-sort`;
 
   return (
-    <div className="mt-3 w-full" id={idPrefix}>
-      <div className="rounded-lg border border-border/80 bg-muted/10 p-1.5 sm:p-2">
-        <div className="flex flex-wrap items-end gap-x-2 gap-y-2 sm:gap-x-2.5 sm:gap-y-2.5">
-          <ExpandedControlSection title="Data">
-            <DashboardDatasetToggle
-              className="shrink-0"
-              idPrefix={datasetPrefix}
-              value={dataset}
-              variant="bar"
-              onChange={onDatasetChange}
-            />
-          </ExpandedControlSection>
+    <div className="flex flex-wrap items-end gap-x-2 gap-y-2 sm:gap-x-2.5 sm:gap-y-2.5">
+      <ExpandedControlSection title="Data">
+        <DashboardDatasetToggle
+          className="shrink-0"
+          idPrefix={datasetPrefix}
+          value={dataset}
+          variant="bar"
+          onChange={onDatasetChange}
+        />
+      </ExpandedControlSection>
 
-          <ExpandedControlSection className="max-w-full sm:max-w-none" title="Sort by">
-            <label className="sr-only" htmlFor={sortSelectId}>
-              Sort order
+      <ExpandedControlSection className="max-w-full sm:max-w-none" title="Sort by">
+        <label className="sr-only" htmlFor={sortSelectId}>
+          Sort order
+        </label>
+        <select
+          className={expandedSelectClass}
+          id={sortSelectId}
+          value={sortMode}
+          onChange={(e) => setSortMode(e.target.value as LaborChartSortMode)}
+        >
+          <option value="high-low">High → Low (unemployment)</option>
+          <option value="low-high">Low → High (unemployment)</option>
+          <option value="alphabetical">A–Z (state name)</option>
+        </select>
+      </ExpandedControlSection>
+
+      <ExpandedControlSection
+        className="w-full max-w-[min(100%,220px)] sm:w-auto"
+        title="Filter"
+      >
+        <div className="flex flex-wrap items-end gap-1.5">
+          <div className="min-w-0 flex-1">
+            <label className="sr-only" htmlFor={filterId}>
+              Search states by name
             </label>
-            <select
-              className={expandedSelectClass}
-              id={sortSelectId}
-              value={sortMode}
-              onChange={(e) => setSortMode(e.target.value as LaborChartSortMode)}
-            >
-              <option value="high-low">High → Low (unemployment)</option>
-              <option value="low-high">Low → High (unemployment)</option>
-              <option value="alphabetical">A–Z (state name)</option>
-            </select>
-          </ExpandedControlSection>
-
-          <ExpandedControlSection
-            className="w-full max-w-[min(100%,220px)] sm:w-auto"
-            title="Filter"
-          >
-            <div className="flex flex-wrap items-end gap-1.5">
-              <div className="min-w-0 flex-1">
-                <label className="sr-only" htmlFor={filterId}>
-                  Search states by name
-                </label>
-                <input
-                  autoComplete="off"
-                  className={cn(
-                    "h-8 w-full min-w-0 max-w-[200px] sm:max-w-[220px] rounded-md border border-input bg-background px-2.5 py-1 text-sm shadow-sm ring-offset-background placeholder:text-muted-foreground",
-                    "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
-                  )}
-                  id={filterId}
-                  placeholder="Search states…"
-                  type="search"
-                  value={nameFilter}
-                  onChange={(e) => setNameFilter(e.target.value)}
-                />
-              </div>
-              {nameFilter.trim() ? (
-                <Button
-                  className="h-8 shrink-0 px-2.5 text-xs"
-                  size="sm"
-                  type="button"
-                  variant="ghost"
-                  onClick={() => setNameFilter("")}
-                >
-                  Clear
-                </Button>
-              ) : null}
-            </div>
-          </ExpandedControlSection>
-
-          <ExpandedControlSection title="View">
+            <input
+              autoComplete="off"
+              className={cn(
+                "h-8 w-full min-w-0 max-w-[200px] sm:max-w-[220px] rounded-md border border-input bg-background px-2.5 py-1 text-sm shadow-sm ring-offset-background placeholder:text-muted-foreground",
+                "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+              )}
+              id={filterId}
+              placeholder="Search states…"
+              type="search"
+              value={nameFilter}
+              onChange={(e) => setNameFilter(e.target.value)}
+            />
+          </div>
+          {nameFilter.trim() ? (
             <Button
-              className="h-7 text-xs"
-              disabled={expandDisabled}
-              size="sm"
-              type="button"
-              variant="outline"
-              onClick={onExpandChart}
-            >
-              Expand chart
-            </Button>
-          </ExpandedControlSection>
-
-          <div className="flex w-full basis-full justify-end pt-1 sm:basis-auto sm:ml-auto sm:w-auto sm:pt-0">
-            <Button
-              className="h-8 text-xs text-muted-foreground hover:text-foreground"
+              className="h-8 shrink-0 px-2.5 text-xs"
               size="sm"
               type="button"
               variant="ghost"
-              onClick={onResetView}
+              onClick={() => setNameFilter("")}
             >
-              Reset view
+              Clear
             </Button>
+          ) : null}
+        </div>
+      </ExpandedControlSection>
+
+      <ExpandedControlSection title="View">
+        <Button
+          className="h-7 text-xs"
+          disabled={expandDisabled}
+          size="sm"
+          type="button"
+          variant="outline"
+          onClick={onExpandChart}
+        >
+          Expand chart
+        </Button>
+      </ExpandedControlSection>
+
+      <div className="flex w-full basis-full justify-end pt-1 sm:basis-auto sm:ml-auto sm:w-auto sm:pt-0">
+        <Button
+          className="h-8 text-xs text-muted-foreground hover:text-foreground"
+          size="sm"
+          type="button"
+          variant="ghost"
+          onClick={onResetView}
+        >
+          Reset view
+        </Button>
+      </div>
+    </div>
+  );
+}
+
+/** Narrow Charts tab: second row only — Sort, Filter, Expand flush (dataset row lives above). */
+function LaborChartsInlineMobileQuickToolbar({
+  toolbarId,
+  headingId,
+  sortMode,
+  setSortMode,
+  nameFilter,
+  setNameFilter,
+  filterId,
+  onExpandChart,
+  expandDisabled,
+}: {
+  toolbarId: string;
+  headingId: string;
+  sortMode: LaborChartSortMode;
+  setSortMode: (m: LaborChartSortMode) => void;
+  nameFilter: string;
+  setNameFilter: (v: string) => void;
+  filterId: string;
+  onExpandChart: () => void;
+  expandDisabled: boolean;
+}) {
+  return (
+    <div
+      aria-label="Chart actions"
+      className="flex w-full min-w-0 shrink-0 flex-wrap items-center gap-1.5"
+      id={toolbarId}
+      role="group"
+    >
+      <LaborChartMobileSortMenu
+        instanceId="inline-quick"
+        setSortMode={setSortMode}
+        sortMode={sortMode}
+      />
+      <details className="relative min-w-0 shrink-0">
+        <summary
+          aria-label={nameFilter.trim() ? "Filter states, filter active" : "Filter states"}
+          className={cn(
+            "flex h-8 cursor-pointer list-none items-center gap-1 rounded-md border border-input bg-background px-2 text-xs font-medium text-foreground shadow-sm",
+            "outline-none ring-offset-background focus-visible:ring-2 focus-visible:ring-ring",
+            "[&::-webkit-details-marker]:hidden",
+          )}
+        >
+          <Search aria-hidden className="size-3.5 opacity-80" />
+          <span aria-hidden>Filter</span>
+          {nameFilter.trim() ? (
+            <span aria-hidden className="size-1.5 rounded-full bg-primary" />
+          ) : null}
+        </summary>
+        <div className="absolute right-0 top-full z-20 mt-1 w-[min(calc(100vw-2.5rem),17rem)] rounded-md border border-border bg-popover p-2 shadow-md">
+          <label className="sr-only" htmlFor={filterId}>
+            Search states by name
+          </label>
+          <div className="flex items-center gap-1">
+            <input
+              autoComplete="off"
+              className={cn(
+                "h-8 w-full min-w-0 max-w-full flex-1 rounded-md border border-input bg-background px-2 text-xs shadow-sm ring-offset-background placeholder:text-muted-foreground",
+                "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+              )}
+              id={filterId}
+              placeholder="Search states…"
+              type="search"
+              value={nameFilter}
+              onChange={(e) => setNameFilter(e.target.value)}
+            />
+            {nameFilter.trim() ? (
+              <Button
+                className="h-8 shrink-0 px-2 text-xs"
+                size="sm"
+                type="button"
+                variant="ghost"
+                onClick={() => setNameFilter("")}
+              >
+                Clear
+              </Button>
+            ) : null}
           </div>
         </div>
+      </details>
+      <Button
+        aria-label="Expand chart"
+        className="ml-auto h-8 w-8 shrink-0 rounded-md p-0"
+        disabled={expandDisabled}
+        size="icon-sm"
+        type="button"
+        variant="outline"
+        onClick={onExpandChart}
+      >
+        <Maximize2 aria-hidden className="size-3.5" />
+      </Button>
+    </div>
+  );
+}
+
+const laborChartMobileDatasetRowClass =
+  "flex w-full min-w-0 items-center justify-between gap-2";
+
+/** Inline charts tab: mobile = Show controls + compact row or full panel; desktop = sectioned bar. */
+function LaborChartsPageControlBar({
+  idPrefix,
+  headingId,
+  dataset,
+  onDatasetChange,
+  sortMode,
+  setSortMode,
+  nameFilter,
+  setNameFilter,
+  filterId,
+  onExpandChart,
+  expandDisabled,
+  onResetView,
+  isNarrow,
+}: {
+  idPrefix: string;
+  headingId: string;
+  dataset: DashboardDataset;
+  onDatasetChange: (value: DashboardDataset) => void;
+  sortMode: LaborChartSortMode;
+  setSortMode: (m: LaborChartSortMode) => void;
+  nameFilter: string;
+  setNameFilter: (v: string) => void;
+  filterId: string;
+  onExpandChart: () => void;
+  expandDisabled: boolean;
+  onResetView: () => void;
+  isNarrow: boolean;
+}) {
+  const [mobileInlineExpanded, setMobileInlineExpanded] = useState(false);
+  const inlineQuickId = `${idPrefix}-quick`;
+  const inlineFullId = `${idPrefix}-full`;
+
+  if (isNarrow) {
+    const datasetPrefix = `${headingId}-labor-chart-dataset`;
+
+    return (
+      <div className="mt-2 w-full" id={idPrefix}>
+        <div className="space-y-1.5 rounded-lg border border-border/70 bg-muted/10 p-1.5">
+          {mobileInlineExpanded ? (
+            <div className="flex justify-end">
+              <Button
+                aria-controls={inlineFullId}
+                aria-expanded
+                className="h-7 gap-0.5 px-2 text-xs text-muted-foreground hover:text-foreground"
+                size="sm"
+                type="button"
+                variant="ghost"
+                onClick={() => setMobileInlineExpanded(false)}
+              >
+                Hide controls
+                <ChevronDown
+                  aria-hidden
+                  className="size-3.5 rotate-180 opacity-70 transition-transform duration-200"
+                />
+              </Button>
+            </div>
+          ) : (
+            <div className={laborChartMobileDatasetRowClass}>
+              <DashboardDatasetToggle
+                className="min-w-0 shrink [&_[role=radiogroup]]:flex-nowrap"
+                idPrefix={datasetPrefix}
+                size="compact"
+                value={dataset}
+                variant="bar"
+                onChange={onDatasetChange}
+              />
+              <Button
+                aria-controls={inlineQuickId}
+                aria-expanded={false}
+                className="h-7 shrink-0 gap-0.5 px-2 text-xs text-muted-foreground hover:text-foreground"
+                size="sm"
+                type="button"
+                variant="ghost"
+                onClick={() => setMobileInlineExpanded(true)}
+              >
+                Show controls
+                <ChevronDown
+                  aria-hidden
+                  className="size-3.5 opacity-70 transition-transform duration-200"
+                />
+              </Button>
+            </div>
+          )}
+          {mobileInlineExpanded ? (
+            <div className="rounded-md border border-border/60 bg-background/60 p-2" id={inlineFullId}>
+              <LaborChartsPageDesktopPanel
+                dataset={dataset}
+                expandDisabled={expandDisabled}
+                filterId={filterId}
+                headingId={headingId}
+                nameFilter={nameFilter}
+                setNameFilter={setNameFilter}
+                sortMode={sortMode}
+                setSortMode={setSortMode}
+                onDatasetChange={onDatasetChange}
+                onExpandChart={onExpandChart}
+                onResetView={onResetView}
+              />
+            </div>
+          ) : (
+            <LaborChartsInlineMobileQuickToolbar
+              expandDisabled={expandDisabled}
+              filterId={filterId}
+              headingId={headingId}
+              nameFilter={nameFilter}
+              setNameFilter={setNameFilter}
+              sortMode={sortMode}
+              setSortMode={setSortMode}
+              toolbarId={inlineQuickId}
+              onExpandChart={onExpandChart}
+            />
+          )}
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="mt-3 w-full" id={idPrefix}>
+      <div className="rounded-lg border border-border/80 bg-muted/10 p-1.5 sm:p-2">
+        <LaborChartsPageDesktopPanel
+          dataset={dataset}
+          expandDisabled={expandDisabled}
+          filterId={filterId}
+          headingId={headingId}
+          nameFilter={nameFilter}
+          setNameFilter={setNameFilter}
+          sortMode={sortMode}
+          setSortMode={setSortMode}
+          onDatasetChange={onDatasetChange}
+          onExpandChart={onExpandChart}
+          onResetView={onResetView}
+        />
       </div>
     </div>
   );
@@ -727,11 +1047,6 @@ function LaborExpandedStatusStrip({
   );
 }
 
-const mobileModalQuickSelectClass = cn(
-  "h-8 min-w-0 max-w-[9.25rem] flex-1 shrink rounded-md border border-input bg-background px-1.5 text-xs shadow-sm ring-offset-background",
-  "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
-);
-
 /** Mobile expanded: single balanced toolbar (mockup-style) — chart stays high in the viewport. */
 function LaborExpandedModalMobileQuickRow({
   quickControlsId,
@@ -758,104 +1073,97 @@ function LaborExpandedModalMobileQuickRow({
   onToggleFullscreen: () => void;
   fsActive: boolean;
 }) {
-  const sortSelectId = `${headingId}-labor-modal-mobile-sort`;
   const filterId = `${headingId}-labor-modal-mobile-filter`;
   const datasetPrefix = `${headingId}-labor-modal-mobile-dataset`;
 
   return (
     <div
       aria-label="Chart controls"
-      className="flex w-full min-w-0 shrink-0 flex-wrap items-center gap-1.5 rounded-lg border border-border/70 bg-muted/10 p-1.5"
+      className="space-y-1.5 rounded-lg border border-border/70 bg-muted/10 p-1.5"
       id={quickControlsId}
       role="group"
     >
-      <DashboardDatasetToggle
-        className="min-w-0 shrink-0 [&_[role=radiogroup]]:flex-nowrap"
-        idPrefix={datasetPrefix}
-        size="compact"
-        value={dataset}
-        variant="bar"
-        onChange={onDatasetChange}
-      />
-      <div className="flex min-w-0 max-w-[42%] flex-1 items-center sm:max-w-none">
-        <label className="sr-only" htmlFor={sortSelectId}>
-          Sort order
-        </label>
-        <select
-          className={mobileModalQuickSelectClass}
-          id={sortSelectId}
-          value={sortMode}
-          onChange={(e) => setSortMode(e.target.value as LaborChartSortMode)}
-        >
-          <option value="high-low">Sort: High → Low</option>
-          <option value="low-high">Sort: Low → High</option>
-          <option value="alphabetical">Sort: A–Z</option>
-        </select>
+      <div className="flex w-full min-w-0 items-center">
+        <DashboardDatasetToggle
+          className="min-w-0 shrink [&_[role=radiogroup]]:flex-nowrap"
+          idPrefix={datasetPrefix}
+          size="compact"
+          value={dataset}
+          variant="bar"
+          onChange={onDatasetChange}
+        />
       </div>
-      <details className="relative min-w-0 shrink-0">
-        <summary
-          aria-label={nameFilter.trim() ? "Filter states, filter active" : "Filter states"}
-          className={cn(
-            "flex h-8 cursor-pointer list-none items-center gap-1 rounded-md border border-input bg-background px-2 text-xs font-medium text-foreground shadow-sm",
-            "outline-none ring-offset-background focus-visible:ring-2 focus-visible:ring-ring",
-            "[&::-webkit-details-marker]:hidden",
-          )}
-        >
-          <Search aria-hidden className="size-3.5 opacity-80" />
-          <span aria-hidden>Filter</span>
-          {nameFilter.trim() ? (
-            <span aria-hidden className="size-1.5 rounded-full bg-primary" />
-          ) : null}
-        </summary>
-        <div className="absolute right-0 top-full z-30 mt-1 w-[min(calc(100vw-2.5rem),17rem)] rounded-md border border-border bg-popover p-2 shadow-md">
-          <label className="sr-only" htmlFor={filterId}>
-            Search states by name
-          </label>
-          <div className="flex items-center gap-1">
-            <input
-              autoComplete="off"
-              className={cn(
-                "h-8 w-full min-w-0 max-w-full flex-1 rounded-md border border-input bg-background px-2 text-xs shadow-sm ring-offset-background placeholder:text-muted-foreground",
-                "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
-              )}
-              id={filterId}
-              placeholder="Search states…"
-              type="search"
-              value={nameFilter}
-              onChange={(e) => setNameFilter(e.target.value)}
-            />
+      <div className="flex w-full min-w-0 shrink-0 flex-wrap items-center gap-1.5">
+        <LaborChartMobileSortMenu
+          instanceId="modal-quick"
+          setSortMode={setSortMode}
+          sortMode={sortMode}
+        />
+        <details className="relative min-w-0 shrink-0">
+          <summary
+            aria-label={nameFilter.trim() ? "Filter states, filter active" : "Filter states"}
+            className={cn(
+              "flex h-8 cursor-pointer list-none items-center gap-1 rounded-md border border-input bg-background px-2 text-xs font-medium text-foreground shadow-sm",
+              "outline-none ring-offset-background focus-visible:ring-2 focus-visible:ring-ring",
+              "[&::-webkit-details-marker]:hidden",
+            )}
+          >
+            <Search aria-hidden className="size-3.5 opacity-80" />
+            <span aria-hidden>Filter</span>
             {nameFilter.trim() ? (
-              <Button
-                className="h-8 shrink-0 px-2 text-xs"
-                size="sm"
-                type="button"
-                variant="ghost"
-                onClick={() => setNameFilter("")}
-              >
-                Clear
-              </Button>
+              <span aria-hidden className="size-1.5 rounded-full bg-primary" />
             ) : null}
+          </summary>
+          <div className="absolute right-0 top-full z-30 mt-1 w-[min(calc(100vw-2.5rem),17rem)] rounded-md border border-border bg-popover p-2 shadow-md">
+            <label className="sr-only" htmlFor={filterId}>
+              Search states by name
+            </label>
+            <div className="flex items-center gap-1">
+              <input
+                autoComplete="off"
+                className={cn(
+                  "h-8 w-full min-w-0 max-w-full flex-1 rounded-md border border-input bg-background px-2 text-xs shadow-sm ring-offset-background placeholder:text-muted-foreground",
+                  "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+                )}
+                id={filterId}
+                placeholder="Search states…"
+                type="search"
+                value={nameFilter}
+                onChange={(e) => setNameFilter(e.target.value)}
+              />
+              {nameFilter.trim() ? (
+                <Button
+                  className="h-8 shrink-0 px-2 text-xs"
+                  size="sm"
+                  type="button"
+                  variant="ghost"
+                  onClick={() => setNameFilter("")}
+                >
+                  Clear
+                </Button>
+              ) : null}
+            </div>
           </div>
-        </div>
-      </details>
-      <span className="sr-only" id={`${densityGroupId}-quick-fs-hint`}>
-        Toggle browser full screen for this panel when supported.
-      </span>
-      <Button
-        aria-describedby={`${densityGroupId}-quick-fs-hint`}
-        aria-label={fsActive ? "Exit full screen" : "Enter full screen"}
-        className="ml-auto h-8 w-8 shrink-0 rounded-md p-0"
-        size="icon-sm"
-        type="button"
-        variant="outline"
-        onClick={onToggleFullscreen}
-      >
-        {fsActive ? (
-          <Minimize2 aria-hidden className="size-3.5" />
-        ) : (
-          <Maximize2 aria-hidden className="size-3.5" />
-        )}
-      </Button>
+        </details>
+        <span className="sr-only" id={`${densityGroupId}-quick-fs-hint`}>
+          Toggle browser full screen for this panel when supported.
+        </span>
+        <Button
+          aria-describedby={`${densityGroupId}-quick-fs-hint`}
+          aria-label={fsActive ? "Exit full screen" : "Enter full screen"}
+          className="ml-auto h-8 w-8 shrink-0 rounded-md p-0"
+          size="icon-sm"
+          type="button"
+          variant="outline"
+          onClick={onToggleFullscreen}
+        >
+          {fsActive ? (
+            <Minimize2 aria-hidden className="size-3.5" />
+          ) : (
+            <Maximize2 aria-hidden className="size-3.5" />
+          )}
+        </Button>
+      </div>
     </div>
   );
 }

@@ -36,6 +36,7 @@ The application has two main layers:
 ### 2. Knowledge Layer (Supporting)
 - `/glossary` → short definitions  
 - `/topics` → longer explanatory content  
+- No separate top-level routes for people, institutions, or events (those concepts live in glossary content)
 
 Guidelines:
 - Glossary supports understanding of data concepts  
@@ -85,6 +86,13 @@ src/
     topics.ts
     types.ts
 
+  features/
+    economic-data/
+      queries/
+      hooks/
+      components/
+      utils/
+
   lib/
     supabase/
     map/
@@ -99,9 +107,9 @@ src/
 ## Data Layer Guidance
 
 - Use TanStack Query for client-side data fetching and caching  
-- Keep fetch logic in dedicated query files  
-- Isolate Supabase access in `lib/supabase`  
-- Do not fetch data directly inside UI components  
+- Keep dashboard data fetch logic in `features/economic-data` (queries + hooks); isolate Supabase types/client as already structured there  
+- Isolate low-level Supabase client wiring in `lib/supabase`  
+- Do not fetch data directly inside presentational UI components  
 - Normalize and shape data before passing into components  
 
 ---

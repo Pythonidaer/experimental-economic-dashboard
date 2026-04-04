@@ -17,31 +17,29 @@ export function StateTradeTotalByStateA11yTable({
   describedBy,
 }: Props) {
   return (
-    <table
-      aria-describedby={describedBy}
-      aria-labelledby={labelledBy}
-      className="sr-only"
-    >
-      <caption>
-        Total trade value by state, in US dollars, summed across all years in the
-        dataset. Rows are sorted highest to lowest, matching the bar chart.
-      </caption>
-      <thead>
-        <tr>
-          <th scope="col">State</th>
-          <th scope="col">State code</th>
-          <th scope="col">Total trade</th>
-        </tr>
-      </thead>
-      <tbody>
-        {data.map((row) => (
-          <tr key={row.stateCode}>
-            <td>{row.stateName}</td>
-            <td>{row.stateCode}</td>
-            <td>{formatTradeCurrency(row.value)}</td>
+    <div className="a11y-visually-hidden">
+      <table aria-describedby={describedBy} aria-labelledby={labelledBy}>
+        <caption>
+          Total trade value by state, in US dollars, summed across all years in the
+          dataset. Rows are sorted highest to lowest, matching the bar chart.
+        </caption>
+        <thead>
+          <tr>
+            <th scope="col">State</th>
+            <th scope="col">State code</th>
+            <th scope="col">Total trade</th>
           </tr>
-        ))}
-      </tbody>
-    </table>
+        </thead>
+        <tbody>
+          {data.map((row) => (
+            <tr key={row.stateCode}>
+              <td>{row.stateName}</td>
+              <td>{row.stateCode}</td>
+              <td>{formatTradeCurrency(row.value)}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
   );
 }

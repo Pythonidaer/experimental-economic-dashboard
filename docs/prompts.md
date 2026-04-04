@@ -12,6 +12,8 @@ Before making changes, read:
 - docs/product-requirements.md
 - docs/architecture.md
 - docs/implementation-plan.md
+- docs/data-model.md
+- docs/data-roadmap.md
 - docs/done-criteria.md
 - docs/decisions.md
 
