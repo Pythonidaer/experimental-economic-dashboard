@@ -45,3 +45,4 @@ A task is only done when:
 
 - "Done" does not mean perfect; it means production-ready for the current stage
 - If documentation is outdated, either update it or explicitly note the mismatch before considering the task complete
+- For data work, confirm behavior matches **active** dashboard datasets (currently **Exports** + **Labor** on the main toggle) and that docs such as `data-model.md` / `product-requirements.md` are not contradicted by the change

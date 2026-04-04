@@ -1,3 +1,4 @@
+import type { StateExportProfilesFilter } from "@/features/economic-data/queries/state-export-profiles";
 import type { StateLaborMetricsFilter } from "@/features/economic-data/queries/state-labor-metrics";
 import type { StateTradeMetricsFilter } from "@/features/economic-data/queries/state-trade-metrics";
 
@@ -20,6 +21,17 @@ export const economicDataQueryKeys = {
         "list",
         filter?.year ?? null,
         filter?.stateCode ?? null,
+      ] as const,
+  },
+  stateExportProfiles: {
+    root: ["state-export-profiles"] as const,
+    list: (filter?: StateExportProfilesFilter) =>
+      [
+        ...economicDataQueryKeys.stateExportProfiles.root,
+        "list",
+        filter?.year ?? null,
+        filter?.stateCode ?? null,
+        filter?.periodLabel ?? null,
       ] as const,
   },
   geo: {

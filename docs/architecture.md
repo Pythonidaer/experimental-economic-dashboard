@@ -29,8 +29,10 @@
 The application has two main layers:
 
 ### 1. Data Layer (Primary)
-- Interactive dashboard (map, charts, tables)  
+- Interactive dashboard (map, charts, tables, notes)  
 - Focused on exploration of economic data  
+- **Active datasets on the main path:** **Labor** (BLS LAU unemployment via `state_labor_metrics`) and **Exports** (Census **origin-of-movement**-style buckets via `state_export_profiles`)  
+- Exports data is intentionally **broad** (manufactured / non-manufactured / re-exports / total)—useful for state comparison, **not** a full industry or product model  
 - This is the core product direction  
 
 ### 2. Knowledge Layer (Supporting)
@@ -43,6 +45,8 @@ Guidelines:
 - Topics provide context, not exhaustive coverage  
 - Not all knowledge content must connect to the dashboard  
 - Avoid over-linking between systems  
+
+**Likely future map/data layers (not implemented until sourced and scoped):** banking institutions or branches, employment or jobs by state, and richer trade/product layers. These would extend the same dashboard pattern (flat tables, TanStack Query, map/table/chart/notes) rather than inventing a new platform architecture.
 
 ---
 

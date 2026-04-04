@@ -80,6 +80,66 @@ export type Database = {
         };
         Relationships: [];
       };
+      state_export_profiles: {
+        Row: {
+          id: string;
+          state_code: string;
+          state_name: string;
+          year: number;
+          month: number | null;
+          period_label: string | null;
+          manufactured_exports: number | null;
+          non_manufactured_exports: number | null;
+          re_exports: number | null;
+          total_exports: number | null;
+          manufactured_percent: number | null;
+          non_manufactured_percent: number | null;
+          notes: string | null;
+          source_name: string | null;
+          source_url: string | null;
+          methodology_note: string | null;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          state_code: string;
+          state_name: string;
+          year: number;
+          month?: number | null;
+          period_label?: string | null;
+          manufactured_exports?: number | null;
+          non_manufactured_exports?: number | null;
+          re_exports?: number | null;
+          total_exports?: number | null;
+          manufactured_percent?: number | null;
+          non_manufactured_percent?: number | null;
+          notes?: string | null;
+          source_name?: string | null;
+          source_url?: string | null;
+          methodology_note?: string | null;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          state_code?: string;
+          state_name?: string;
+          year?: number;
+          month?: number | null;
+          period_label?: string | null;
+          manufactured_exports?: number | null;
+          non_manufactured_exports?: number | null;
+          re_exports?: number | null;
+          total_exports?: number | null;
+          manufactured_percent?: number | null;
+          non_manufactured_percent?: number | null;
+          notes?: string | null;
+          source_name?: string | null;
+          source_url?: string | null;
+          methodology_note?: string | null;
+          created_at?: string;
+        };
+        Relationships: [];
+      };
     };
     Views: Record<string, never>;
     Functions: Record<string, never>;
@@ -93,3 +153,6 @@ export type StateTradeMetricRow =
 
 export type StateLaborMetricRow =
   Database["public"]["Tables"]["state_labor_metrics"]["Row"];
+
+export type StateExportProfileRow =
+  Database["public"]["Tables"]["state_export_profiles"]["Row"];

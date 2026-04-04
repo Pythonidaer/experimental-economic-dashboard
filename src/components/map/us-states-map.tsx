@@ -13,7 +13,7 @@ import type { UsStateSelection } from "@/lib/map/types";
 import {
   addUsStatesGeoJsonLayersOnce,
   bindUsStatesClick,
-  syncUsStatesHighlight,
+  syncUsStatesChoroplethFill,
   US_STATES_SOURCE,
 } from "@/lib/map/us-states-map-layers";
 
@@ -21,12 +21,15 @@ type UsStatesMapProps = {
   geojson: FeatureCollection;
   selectedPostal: string | null;
   onSelectState: (selection: UsStateSelection) => void;
+  /** Normalized 0–1 by postal (any case); when empty, fills are selection-only gray/blue. */
+  choroplethByPostal?: Record<string, number> | null;
 };
 
 export function UsStatesMap({
   geojson,
   selectedPostal,
   onSelectState,
+  choroplethByPostal = null,
 }: UsStatesMapProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<MapLibreMap | null>(null);
@@ -38,6 +41,7 @@ export function UsStatesMap({
   const onSelectRef = useRef(onSelectState);
   const geojsonRef = useRef(geojson);
   const selectedPostalRef = useRef(selectedPostal);
+  const choroplethRef = useRef(choroplethByPostal);
   const [mapLayersReady, setMapLayersReady] = useState(false);
 
   useEffect(() => {
@@ -51,6 +55,10 @@ export function UsStatesMap({
   useEffect(() => {
     selectedPostalRef.current = selectedPostal;
   }, [selectedPostal]);
+
+  useEffect(() => {
+    choroplethRef.current = choroplethByPostal;
+  }, [choroplethByPostal]);
 
   useEffect(() => {
     const container = containerRef.current;
@@ -93,7 +101,14 @@ export function UsStatesMap({
           const postals = data.features.map((f) =>
             String((f.properties as Record<string, unknown>)?.postal ?? "")
           );
-          syncUsStatesHighlight(map, postals, selectedPostalRef.current);
+          syncUsStatesChoroplethFill(
+            map,
+            postals,
+            selectedPostalRef.current,
+            choroplethRef.current && Object.keys(choroplethRef.current).length > 0
+              ? choroplethRef.current
+              : null,
+          );
 
           if (generation !== lifecycleGenRef.current) return;
           setMapLayersReady(true);
@@ -124,8 +139,12 @@ export function UsStatesMap({
     const postals = geojson.features.map((f) =>
       String((f.properties as Record<string, unknown>)?.postal ?? "")
     );
-    syncUsStatesHighlight(map, postals, selectedPostal);
-  }, [geojson, mapLayersReady, selectedPostal]);
+    const chroma =
+      choroplethByPostal && Object.keys(choroplethByPostal).length > 0
+        ? choroplethByPostal
+        : null;
+    syncUsStatesChoroplethFill(map, postals, selectedPostal, chroma);
+  }, [geojson, mapLayersReady, selectedPostal, choroplethByPostal]);
 
   return (
     <div

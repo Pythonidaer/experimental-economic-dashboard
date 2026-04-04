@@ -7,10 +7,12 @@
 - People, institutions, laws, and events remain modeled as glossary entries (no extra routes)
 - Glossary and topics indexes include alphabetical navigation and consistent layout with detail pages
 
-## Phase 2: Dashboard Data Integration (in progress / iterative)
+## Phase 2: Dashboard Data Integration — iterative (current)
 - Confirm Supabase schema matches the app’s query needs
-- **`state_trade_metrics`** and **`state_labor_metrics`** are integrated in the frontend with real query-backed data where loaded (labor unemployment includes **2024 state annual rates from BLS LAU**)
+- **`state_labor_metrics`** remains **active** for **unemployment** (e.g. **2024** state annual rates from **BLS LAU** where loaded)
+- **`state_export_profiles`** is **integrated** for the **Exports** toggle: Census **origin-of-movement**-style buckets on map, table, charts, and Notes (with shared chart controls pattern alongside Labor where implemented)
 - Keep loading, error, and empty states handled consistently
+- **`state_trade_metrics`** may remain in the project for reference or future use; the **primary** user-facing trade-adjacent layer is **Exports** unless the product changes
 
 ## Phase 3: Map View Hardening
 - State boundaries and state-level data render reliably
@@ -18,7 +20,7 @@
 - The same information remains accessible outside the map (table, charts)
 
 ## Phase 4: Table View Hardening
-- Tables use real data for trade and labor flows that are wired in the UI
+- Tables use real data for **Exports** and **Labor** flows that are wired in the UI
 - Sorting and filtering remain understandable; table interactions stay aligned with map/chart state
 - Responsive behavior including accessible **screen-reader tables** where applicable
 
@@ -27,21 +29,27 @@
 - Comparative views stay readable; **expanded chart mode** supports deeper exploration without cluttering the default view
 - Mobile layout and controls refined for the current stage
 
-## Phase 6: Next-stage data and source work
-- **Trade data enrichment** (e.g. richer time range or breakdowns only when sourced and justified—see `docs/data-roadmap.md`)
+## Phase 6: Data usefulness and interpretability (next likely thrust)
+- **Exports:** explore more **actionable** breakdowns (product, partner, or industry-aligned cuts) **only when** sources and maintenance are defined—current buckets stay honest about limits
+- **Labor:** extend beyond unemployment where fields (`avg_wage`, `labor_force_participation`, etc.) and UI use cases justify it
+- **Jobs / industry by state:** add datasets (and possibly new tables) when a reliable source and clear visualization story exist
+- **Banking:** explore institution or branch datasets for reference data and eventual **bank map** layers—not committed until scoped
 - **Source reliability:** document provenance, coverage, and limitations; tighten ingestion validation as needed
-- **Labor fields beyond unemployment:** fill or document `avg_wage` and `labor_force_participation` when sources and UI use cases are clear
 
-## Phase 7: Polish and Production Readiness
+## Phase 7: Polish and later experimentation
 - Accessibility labels and keyboard behavior
 - TypeScript and lint cleanup
 - Refactor large files where necessary
 - Empty/loading/error state review
-- README and docs kept aligned with implementation
+- **UI cleanup and chart alternatives** as optional later refinement (same architecture, different presentation experiments)
+- **Future map surfaces:** banking-focused maps, jobs/employment maps—only after data exists
+
+### Later exploratory (not current implementation)
+- **Job scraper** or third-party job-posting **ingestion pipeline** research (e.g. evaluating sources, licensing, refresh cadence). Treat as **research**, not a committed milestone, until requirements and ethics/legal constraints are clear.
 
 ---
 
 ## Notes
 - **Dashboard** and data visualization remain the primary product direction; glossary/topics are **supporting**
-- Labor integration shipped **before** broad multi-dataset expansion; the next deliberate thrust is trade enrichment and source-quality work—not a second “first integration” pass for unemployment
 - Do not expand scope beyond current architecture unless documentation is updated first
+- Distinguish **shipped behavior** (Labor + Exports on the main path) from **roadmap** items in issues and prompts

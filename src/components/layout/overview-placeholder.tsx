@@ -19,15 +19,15 @@ export function OverviewPlaceholder() {
         </li>
         <li>
           <strong className="font-medium text-foreground">Table</strong> — sort and
-          filter; switch between trade and labor
+          filter; switch between Census export buckets and labor (unemployment)
         </li>
         <li>
           <strong className="font-medium text-foreground">Charts</strong> — quick
-          state comparisons for the same categories
+          state comparisons for the same categories (export charts pick one bucket at a time)
         </li>
         <li>
-          <strong className="font-medium text-foreground">Notes</strong> — roadmap for
-          data and methodology
+          <strong className="font-medium text-foreground">Notes</strong> — sources and
+          how to interpret unemployment and export structure
         </li>
       </ul>
     </section>

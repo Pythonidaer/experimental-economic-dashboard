@@ -30,9 +30,9 @@ Future users:
 1. Dashboard layout with tabs  
 2. Overview tab with high-level dashboard context  
 3. Map tab with state-level visualization  
-4. Table tab with sortable/filterable data table (trade and labor flows as integrated)  
-5. Chart tab with summary comparisons, exploration controls, and expanded chart mode (where implemented)  
-6. Notes tab with **interpretive** context (sources such as BLS LAU, what the metrics mean, limitations—not placeholder-only copy)  
+4. Table tab with sortable/filterable data for the **active datasets** (**Exports** and **Labor**)  
+5. Chart tab with summary comparisons, exploration controls, and expanded chart mode for those datasets (shared control patterns where implemented)  
+6. Notes tab with **interpretive** context (e.g. BLS LAU for unemployment, Census **origin-of-movement** caveats for exports—methodology, limitations, what not to infer)  
 7. Detail panel or drawer when selecting a state  
 8. Supabase-backed dataset retrieval  
 9. Loading, error, and empty states  
@@ -47,14 +47,24 @@ Future users:
 
 ## Data Scope
 
-Current datasets:
-- `state_trade_metrics` — active in dashboard views  
-- `state_labor_metrics` — **active** for **unemployment** (real values for loaded periods, e.g. **2024** state annual averages from **BLS LAU**); other columns may be incomplete until sourcing expands  
+**Primary dashboard datasets (current):**
+- **`state_export_profiles`** — **active** on the **Exports** toggle: Census-style **origin-of-movement** export buckets (manufactured, non-manufactured, re-exports, total). **Broad and comparative**, not industry-level or product-level truth. Values are treated as **millions of U.S. dollars** in the app. See Notes for methodology.
+- **`state_labor_metrics`** — **active** on the **Labor** toggle: **unemployment** for loaded periods (e.g. **2024** state annual averages from **BLS LAU**); other columns may be incomplete until sourcing expands.
+
+**Other schema:**
+- **`state_trade_metrics`** — may exist in the database and codebase for legacy or future wiring; it is **not** the dataset driving the main **Exports vs Labor** toggle today. Treat **Exports** (`state_export_profiles`) as the live trade-adjacent layer unless implementation changes.
 
 Guidelines:
 - expand datasets incrementally  
 - do not introduce new datasets without a clear UI use case  
 - prioritize data that can be visualized meaningfully  
+
+### Future data (realistic next candidates)
+
+When sources and scope are clear, likely high-value additions include:
+- **industry / employment or jobs by state** (more actionable than coarse exports alone)
+- **banking / financial-institutions** data for reference and optional map layers
+- **more detailed trade or product breakdowns** once a reliable source and maintenance story exist—not a substitute for careful sourcing
 
 ---
 
@@ -86,3 +96,4 @@ Guidelines:
 - The dashboard is the primary product direction  
 - The glossary and topics provide supporting context and explanation  
 - The system should remain simple, readable, and maintainable  
+- Requirement docs should stay honest about **what is live** (Labor + Exports on the main path) vs **roadmap** items (richer trade, jobs, banking)  

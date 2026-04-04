@@ -9,7 +9,7 @@ export type DashboardDataLink = { href: string; label: string };
 
 export type DashboardLinksForKnowledge = {
   links: DashboardDataLink[];
-  /** Optional note when live data is trade-only but the term is labor- or macro-forward-looking */
+  /** Optional note when glossary emphasis is broader than the live dashboard slice */
   footnote?: string;
 };
 
@@ -24,37 +24,40 @@ function labelForTab(tab: DashboardTabValue, suffix: string): DashboardDataLink 
   return { href: dashboardTabUrl(tab), label: `${name} · ${suffix}` };
 }
 
-function tradeTriple(): DashboardDataLink[] {
+function activeDashboardTriple(): DashboardDataLink[] {
   return [
-    labelForTab(TAB.map, "trade on the map"),
-    labelForTab(TAB.table, "trade and labor tables"),
-    labelForTab(TAB.charts, "trade and labor charts"),
+    labelForTab(TAB.map, "exports and labor on the map"),
+    labelForTab(TAB.table, "exports and labor tables"),
+    labelForTab(TAB.charts, "exports and labor charts"),
   ];
 }
 
 const LABOR_ROADMAP_FOOTNOTE =
-  "Open the Table or Charts tab and choose Labor for unemployment and wages; the map still highlights trade.";
+  "Open the Table or Charts tab and choose Labor for unemployment; Exports shows Census origin-of-movement buckets.";
 
 /**
  * Only glossary slugs with a direct tie to live dashboard data or the labor layer
  * (see docs/economists-hour-content-plan.md) get dashboard bridges — everything else routes via topics.
  */
 const GLOSSARY_DASHBOARD: Record<string, DashboardLinksForKnowledge> = {
-  globalization: { links: tradeTriple() },
-  "trade-surplus": { links: tradeTriple() },
-  "trade-deficit": { links: tradeTriple() },
-  "exchange-rates": { links: tradeTriple() },
-  "capital-flows": { links: tradeTriple() },
-  "economic-growth": { links: tradeTriple() },
-  unemployment: { links: tradeTriple(), footnote: LABOR_ROADMAP_FOOTNOTE },
-  wages: { links: tradeTriple(), footnote: LABOR_ROADMAP_FOOTNOTE },
+  globalization: { links: activeDashboardTriple() },
+  "trade-surplus": { links: activeDashboardTriple() },
+  "trade-deficit": { links: activeDashboardTriple() },
+  "exchange-rates": { links: activeDashboardTriple() },
+  "capital-flows": { links: activeDashboardTriple() },
+  "economic-growth": { links: activeDashboardTriple() },
+  unemployment: {
+    links: activeDashboardTriple(),
+    footnote: LABOR_ROADMAP_FOOTNOTE,
+  },
+  wages: { links: activeDashboardTriple(), footnote: LABOR_ROADMAP_FOOTNOTE },
 };
 
 const TOPIC_DASHBOARD: Record<string, DashboardLinksForKnowledge> = {
-  "globalization-through-trade-data": { links: tradeTriple() },
-  "trade-and-state-economies": { links: tradeTriple() },
+  "globalization-through-trade-data": { links: activeDashboardTriple() },
+  "trade-and-state-economies": { links: activeDashboardTriple() },
   "labor-wages-and-unemployment": {
-    links: tradeTriple(),
+    links: activeDashboardTriple(),
     footnote: LABOR_ROADMAP_FOOTNOTE,
   },
 };

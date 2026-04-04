@@ -34,7 +34,7 @@ Notes:
 
 ## Execution Priority
 
-The glossary remains the **primary knowledge artifact**, but **dashboard data integration** (trade and **labor unemployment from BLS LAU**) now runs in parallel with ongoing glossary/topic work—not strictly “after” a complete glossary.
+The glossary remains the **primary knowledge artifact**, but **dashboard data integration** (**Labor** / BLS LAU unemployment and **Exports** / Census origin-of-movement buckets via `state_export_profiles`) runs in parallel with ongoing glossary/topic work—not strictly “after” a complete glossary.
 
 Topics can be developed alongside glossary entries. For the **current stage**, treat glossary **structure and baseline content** as **stabilized**; expand entries incrementally without blocking dashboard or data roadmap tasks.
 
@@ -237,16 +237,17 @@ These mappings indicate how glossary concepts relate to datasets.
 
 They guide future integration but do not require immediate implementation.
 
-### state_trade_metrics
-Related concepts:
-- Globalization
-- Trade surplus
-- Trade deficit
-- Exchange rates
-- Capital flows
-- Economic growth
+### state_export_profiles (live — Exports toggle)
 
-### state_labor_metrics
+Related concepts (today and as content expands):
+- Globalization
+- Trade surplus / deficit (orientation—not the same as customs balances without matching definitions)
+- Exchange rates, capital flows, economic growth (context in topics; coarse export buckets support “trade and places,” not full macro)
+
+Future tie-ins: more detailed **product/industry** trade stories when sourced.
+
+### state_labor_metrics (live — Labor toggle)
+
 Related concepts:
 - Unemployment
 - Wages
@@ -255,9 +256,18 @@ Related concepts:
 - Employment
 - Labor force participation
 
-### Future datasets (exploratory)
-- state_industries
-- bank_and_finance_entities
+Future tie-ins: **jobs / industry employment** datasets when integrated.
+
+### state_trade_metrics (reference / auxiliary)
+
+May support glossary copy and legacy links; **not** the main Exports dataset in the product today. Update content if the primary table for trade concepts changes.
+
+### Future datasets (exploratory — see `docs/data-roadmap.md`)
+
+- Industry / employment by state
+- Banking institutions or branches (maps and reference)
+- Richer trade/partner/product layers when available
+- Job postings or scraper-sourced feeds (**research stage only** until scoped)
 
 ---
 
@@ -266,7 +276,9 @@ Related concepts:
 MVP includes:
 - full glossary implementation (ongoing content growth; architecture stabilized for now)
 - initial topic pages
-- **dashboard** integration of core flat datasets (`state_trade_metrics`, `state_labor_metrics` for unemployment)—already in progress / live for unemployment where loaded
+- **dashboard** integration of **`state_labor_metrics`** (unemployment / BLS LAU where loaded) and **`state_export_profiles`** (Census export buckets) on map, table, charts, and Notes
+
+**Banking** and **industry/jobs** topics in the glossary are positioned to connect to **future** bank and employment datasets and maps when those exist—not assumed live today.
 
 Further glossary depth and additional datasets proceed incrementally; they are not serialized as “glossary 100% then data.”
 

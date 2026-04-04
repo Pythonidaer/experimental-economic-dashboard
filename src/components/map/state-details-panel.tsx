@@ -3,24 +3,39 @@
 import type { FeatureCollection } from "geojson";
 import { useMemo } from "react";
 
-import type { StateTradeMetricRow } from "@/features/economic-data/types/database";
+import type { DashboardDataset } from "@/components/layout/dashboard/dashboard-dataset-toggle";
+import type { StateExportProfileRow } from "@/features/economic-data/types/database";
+import type { StateLaborMetricRow } from "@/features/economic-data/types/database";
+import { formatExportMillionsUsdCompact } from "@/features/economic-data/utils/format-export-profile-value";
+import { formatExportPeriodLabelForDisplay } from "@/features/economic-data/utils/format-export-period-label";
+import { formatUnemploymentRate } from "@/features/economic-data/utils/format-labor-metrics";
+import {
+  EXPORT_PROFILE_METRIC_LABELS,
+  NON_MANUFACTURED_EXPORTS_SCOPED_NOTE,
+  type ExportProfileMetricKey,
+} from "@/features/economic-data/utils/export-profiles-chart-data";
 import { ViewError } from "@/components/data-view/view-error";
 import { ViewLoading } from "@/components/data-view/view-loading";
 import type { UsStateSelection } from "@/lib/map/types";
 
 import { cn } from "@/lib/utils";
 
-const currency = new Intl.NumberFormat(undefined, {
-  style: "currency",
-  currency: "USD",
-  maximumFractionDigits: 0,
-});
+const EXPORT_METRIC_OPTIONS: ExportProfileMetricKey[] = [
+  "manufactured_exports",
+  "non_manufactured_exports",
+  "re_exports",
+  "total_exports",
+];
 
 type StateDetailsPanelProps = {
   features: FeatureCollection["features"];
   selected: UsStateSelection | null;
   onSelectByPostal: (postal: string, name: string) => void;
-  metrics: StateTradeMetricRow[];
+  dataset: DashboardDataset;
+  exportMetric: ExportProfileMetricKey;
+  onExportMetricChange: (metric: ExportProfileMetricKey) => void;
+  laborRows: StateLaborMetricRow[];
+  exportRows: StateExportProfileRow[];
   metricsLoading: boolean;
   metricsError: Error | null;
 };
@@ -29,7 +44,11 @@ export function StateDetailsPanel({
   features,
   selected,
   onSelectByPostal,
-  metrics,
+  dataset,
+  exportMetric,
+  onExportMetricChange,
+  laborRows,
+  exportRows,
   metricsLoading,
   metricsError,
 }: StateDetailsPanelProps) {
@@ -47,6 +66,11 @@ export function StateDetailsPanel({
     ? `Selected ${selected.name}, ${selected.postalCode}`
     : "No state selected";
 
+  const contextLine =
+    dataset === "labor"
+      ? "Unemployment matches the Table tab (Labor)."
+      : "Census origin-of-movement export buckets (broad, not industry detail). Map shading = bucket you select, latest loaded row per state. Millions of U.S. dollars.";
+
   return (
     <aside
       aria-labelledby="state-details-heading"
@@ -56,9 +80,7 @@ export function StateDetailsPanel({
         <h3 className="text-base font-semibold tracking-tight" id="state-details-heading">
           State details
         </h3>
-        <p className="mt-1 text-xs text-muted-foreground">
-          Choose a state here or on the map. Figures match the Table tab (Trade view).
-        </p>
+        <p className="mt-1 text-xs text-muted-foreground">{contextLine}</p>
       </div>
 
       <div aria-live="polite" className="sr-only">
@@ -93,9 +115,54 @@ export function StateDetailsPanel({
         </select>
       </div>
 
+      {dataset === "exports" ? (
+        <div>
+          <p className="text-xs font-medium text-foreground" id="map-export-metric-label">
+            Map shading (choropleth)
+          </p>
+          <p className="mt-1 text-[0.7rem] leading-snug text-muted-foreground">
+            Choose which export bucket drives state colors. Uses each state’s latest loaded
+            row in this dataset for that comparison.
+          </p>
+          <div
+            aria-labelledby="map-export-metric-label"
+            className="mt-1.5 flex flex-wrap gap-1.5"
+            role="radiogroup"
+          >
+            {EXPORT_METRIC_OPTIONS.map((key) => (
+              <button
+                key={key}
+                aria-checked={exportMetric === key}
+                className={cn(
+                  "rounded-md border px-2 py-1 text-[0.65rem] font-medium sm:text-xs",
+                  "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+                  exportMetric === key
+                    ? "border-primary bg-primary text-primary-foreground"
+                    : "border-border bg-background text-foreground hover:bg-muted/80",
+                  key === "re_exports" && exportMetric !== key && "opacity-90",
+                )}
+                role="radio"
+                type="button"
+                onClick={() => onExportMetricChange(key)}
+              >
+                {EXPORT_PROFILE_METRIC_LABELS[key]}
+              </button>
+            ))}
+          </div>
+          {exportMetric === "non_manufactured_exports" ? (
+            <p
+              aria-live="polite"
+              className="mt-2 border-l-2 border-primary/30 pl-2 text-[0.7rem] leading-snug text-muted-foreground"
+            >
+              {NON_MANUFACTURED_EXPORTS_SCOPED_NOTE}
+            </p>
+          ) : null}
+        </div>
+      ) : null}
+
       {!selected ? (
         <p className="text-sm text-muted-foreground">
-          Pick a state to see imports, exports, and total trade by year.
+          Pick a state to see metrics for the selected data source.
         </p>
       ) : (
         <div className="space-y-2">
@@ -110,25 +177,70 @@ export function StateDetailsPanel({
               description={metricsError.message}
               title="Could not load metrics"
             />
-          ) : metrics.length === 0 ? (
+          ) : dataset === "labor" ? (
+            laborRows.length === 0 ? (
+              <p className="text-sm text-muted-foreground">
+                No labor figures for this state yet.
+              </p>
+            ) : (
+              <ul className="max-h-64 space-y-2 overflow-y-auto text-sm sm:max-h-48">
+                {laborRows.map((row) => (
+                  <li className="rounded-md border border-border/80 bg-muted/20 px-3 py-2" key={row.id}>
+                    <div className="font-medium tabular-nums">{row.year}</div>
+                    <div className="text-xs text-muted-foreground">
+                      Unemployment{" "}
+                      {row.unemployment_rate == null
+                        ? "—"
+                        : formatUnemploymentRate(Number(row.unemployment_rate))}
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            )
+          ) : exportRows.length === 0 ? (
             <p className="text-sm text-muted-foreground">
-              No trade figures for this state yet, or the state code may not match your data.
+              No export profile rows for this state yet.
             </p>
           ) : (
-            <ul className="max-h-64 space-y-2 overflow-y-auto text-sm sm:max-h-48">
-              {metrics.map((row) => (
+            <>
+              <p className="text-[0.7rem] leading-snug text-muted-foreground">
+                Each card is one loaded period for this state. Amounts are{" "}
+                <strong className="font-medium text-foreground">millions of U.S. dollars</strong>{" "}
+                (origin of movement, not proof of where goods were made).
+              </p>
+              <ul className="max-h-72 space-y-2 overflow-y-auto text-sm sm:max-h-56">
+              {exportRows.map((row) => (
                 <li className="rounded-md border border-border/80 bg-muted/20 px-3 py-2" key={row.id}>
-                  <div className="font-medium tabular-nums">{row.year}</div>
-                  <div className="text-xs text-muted-foreground">
-                    Imports {currency.format(row.import_value)} · Exports{" "}
-                    {currency.format(row.export_value)}
+                  <div className="font-medium tabular-nums">
+                    {formatExportPeriodLabelForDisplay(row.period_label)}
                   </div>
                   <div className="text-xs text-muted-foreground">
-                    Total {currency.format(row.total_trade_value)}
+                    Mfg{" "}
+                    {row.manufactured_exports == null
+                      ? "—"
+                      : formatExportMillionsUsdCompact(Number(row.manufactured_exports))}
+                    {" · "}
+                    Non-mfg{" "}
+                    {row.non_manufactured_exports == null
+                      ? "—"
+                      : formatExportMillionsUsdCompact(Number(row.non_manufactured_exports))}
+                  </div>
+                  <div className="text-xs text-muted-foreground/90">
+                    Re-exports{" "}
+                    {row.re_exports == null
+                      ? "—"
+                      : formatExportMillionsUsdCompact(Number(row.re_exports))}
+                  </div>
+                  <div className="text-xs text-muted-foreground">
+                    Total{" "}
+                    {row.total_exports == null
+                      ? "—"
+                      : formatExportMillionsUsdCompact(Number(row.total_exports))}
                   </div>
                 </li>
               ))}
-            </ul>
+              </ul>
+            </>
           )}
         </div>
       )}

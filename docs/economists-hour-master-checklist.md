@@ -166,26 +166,36 @@ This is the **source of truth for coverage**.
 
 # 🗺️ DATASET CONNECTIONS
 
-## Current
-- [x] state_trade_metrics
+## Current (dashboard — main toggle)
 
-## Next (build after glossary completion)
-- [ ] state_labor_metrics
+- [x] `state_labor_metrics` (Labor: unemployment / BLS LAU where loaded)
+- [x] `state_export_profiles` (Exports: Census origin-of-movement buckets)
 
-## Future
-- [ ] state_industries
-- [ ] macro_indicators
-- [ ] banking_entities
+## Reference / auxiliary (not main toggle today)
+
+- [x] `state_trade_metrics` (schema / legacy or future use; not primary Exports path)
+
+## Next likely datasets (when sourced — see `docs/data-roadmap.md`)
+
+- [ ] Employment / jobs or industry-by-state tables
+- [ ] Industry reference (e.g. NAICS labeling)
+- [ ] Banking institutions / branches for reference and future maps
+
+## Later exploratory
+
+- [ ] Richer trade/product/partner breakdowns (source-dependent)
+- [ ] Job scraper / postings pipeline (research only until scoped)
 
 ---
 
 # 🔗 RELATIONSHIPS (IMPORTANT)
 
 ## Concept → Data
-- Globalization → trade data
-- Unemployment → labor data
-- Inflation → macro data
+- Globalization / trade ideas → **Exports** live data (`state_export_profiles`) + future detailed trade when sourced; legacy `state_trade_metrics` may support related content
+- Unemployment → **Labor** live data (`state_labor_metrics`)
+- Inflation → macro data (future)
 - Antitrust → company concentration (future)
+- Banking regulation / institutions → future **banking** datasets and maps when integrated
 
 ## People → Ideas
 - Friedman → monetarism / markets
@@ -201,15 +211,12 @@ This is the **source of truth for coverage**.
 
 ## Phase Goal
 - **Glossary:** P1 and intended P2 coverage implemented and stabilized in `glossary.ts` (ongoing long-tail optional; P3 political figures still out of scope unless added deliberately)
-- **Dashboard:** Integrate `state_labor_metrics` when ready; connect live data to concepts already defined in the glossary
-
-## After Glossary Completion
-- Integrate state_labor_metrics into dashboard
-- Begin connecting glossary concepts to live data (see `docs/implementation-plan.md` Phase 2+)
+- **Dashboard:** **Labor** and **Exports** are live on the main path; next work prioritizes **data usefulness** (industry/jobs, richer exports when sourced, banking exploration)—see `docs/data-roadmap.md` and `docs/implementation-plan.md`
 
 ## Notes
 - People, institutions, and events are implemented as glossary entries
 - No separate route systems are required for them
+- Dataset checklist above should stay aligned with `docs/data-model.md` (avoid treating `state_trade_metrics` as the active Exports layer)
 
 ---
 

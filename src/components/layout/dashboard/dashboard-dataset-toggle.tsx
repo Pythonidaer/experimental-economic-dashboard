@@ -2,7 +2,7 @@
 
 import { cn } from "@/lib/utils";
 
-export type DashboardDataset = "trade" | "labor";
+export type DashboardDataset = "exports" | "labor";
 
 type DashboardDatasetToggleProps = {
   value: DashboardDataset;
@@ -49,11 +49,11 @@ export function DashboardDatasetToggle({
         role="radiogroup"
       >
         <DatasetOption
-          checked={value === "trade"}
+          checked={value === "exports"}
           compact={compact}
-          id={`${idPrefix}-dataset-trade`}
-          label="Trade"
-          onSelect={() => onChange("trade")}
+          id={`${idPrefix}-dataset-exports`}
+          label="Exports"
+          onSelect={() => onChange("exports")}
         />
         <DatasetOption
           checked={value === "labor"}

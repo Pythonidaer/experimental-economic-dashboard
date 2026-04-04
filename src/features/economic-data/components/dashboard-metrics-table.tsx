@@ -9,23 +9,25 @@ import {
 import { ViewEmpty } from "@/components/data-view/view-empty";
 import { ViewError } from "@/components/data-view/view-error";
 import { ViewLoading } from "@/components/data-view/view-loading";
+import { useStateExportProfiles } from "@/features/economic-data/hooks/use-state-export-profiles";
 import { useStateLaborMetrics } from "@/features/economic-data/hooks/use-state-labor-metrics";
-import { useStateTradeMetrics } from "@/features/economic-data/hooks/use-state-trade-metrics";
 
+import { StateExportProfilesDataTable } from "./state-export-profiles-data-table";
 import { StateLaborMetricsDataTable } from "./state-labor-metrics-data-table";
 import { StateMetricsTableFilter } from "./state-metrics-table-filter";
-import { StateTradeMetricsDataTable } from "./state-trade-metrics-data-table";
 
 export function DashboardMetricsTable() {
-  const [dataset, setDataset] = useState<DashboardDataset>("trade");
-  const [tradeFilter, setTradeFilter] = useState("");
+  const [dataset, setDataset] = useState<DashboardDataset>("exports");
   const [laborFilter, setLaborFilter] = useState("");
+  const [exportFilter, setExportFilter] = useState("");
 
-  const trade = dataset === "trade";
-  const tradeQuery = useStateTradeMetrics(undefined, { enabled: trade });
-  const laborQuery = useStateLaborMetrics(undefined, { enabled: !trade });
+  const laborQuery = useStateLaborMetrics(undefined, { enabled: dataset === "labor" });
+  const exportQuery = useStateExportProfiles(undefined, { enabled: dataset === "exports" });
 
-  const active = trade ? tradeQuery : laborQuery;
+  const active = dataset === "labor" ? laborQuery : exportQuery;
+
+  const loadingMessage =
+    dataset === "labor" ? "Loading labor figures…" : "Loading export profiles…";
 
   return (
     <section
@@ -37,7 +39,7 @@ export function DashboardMetricsTable() {
       </h2>
       <p className="mt-2 max-w-2xl text-sm text-muted-foreground">
         Sort columns with the headers. Use the filter to find a state. Switch between
-        trade flows and labor stats with the control below.
+        exports and labor with the control below.
       </p>
 
       <DashboardDatasetToggle
@@ -47,11 +49,7 @@ export function DashboardMetricsTable() {
       />
 
       <div className="mt-4">
-        {active.isPending ? (
-          <ViewLoading
-            message={trade ? "Loading trade figures…" : "Loading labor figures…"}
-          />
-        ) : null}
+        {active.isPending ? <ViewLoading message={loadingMessage} /> : null}
         {active.isError ? (
           <ViewError
             description={
@@ -60,32 +58,19 @@ export function DashboardMetricsTable() {
             title="Could not load data"
           />
         ) : null}
-        {trade && tradeQuery.isSuccess && tradeQuery.data.length === 0 ? (
-          <ViewEmpty description="No trade rows to show yet. They will appear here when data is available." />
-        ) : null}
-        {!trade && laborQuery.isSuccess && laborQuery.data.length === 0 ? (
+
+        {dataset === "labor" &&
+        laborQuery.isSuccess &&
+        laborQuery.data.length === 0 ? (
           <ViewEmpty description="No labor rows to show yet. They will appear here when data is available." />
         ) : null}
-
-        {trade &&
-        tradeQuery.isSuccess &&
-        tradeQuery.data.length > 0 ? (
-          <>
-            <StateMetricsTableFilter
-              id="table-trade-filter"
-              value={tradeFilter}
-              onChange={setTradeFilter}
-            />
-            <StateTradeMetricsDataTable
-              aria-label="State trade imports, exports, and totals by year"
-              data={tradeQuery.data}
-              globalFilter={tradeFilter}
-              onGlobalFilterChange={setTradeFilter}
-            />
-          </>
+        {dataset === "exports" &&
+        exportQuery.isSuccess &&
+        exportQuery.data.length === 0 ? (
+          <ViewEmpty description="No export data available for the selected dataset." />
         ) : null}
 
-        {!trade &&
+        {dataset === "labor" &&
         laborQuery.isSuccess &&
         laborQuery.data.length > 0 ? (
           <>
@@ -93,7 +78,7 @@ export function DashboardMetricsTable() {
               className="mt-3 max-w-2xl text-sm text-muted-foreground"
               id="table-labor-context"
             >
-              State unemployment rates (2024 annual average). Sorted to highlight
+              State unemployment rates for years in the dataset. Sorted to highlight
               highest unemployment states.
             </p>
             <StateMetricsTableFilter
@@ -107,6 +92,33 @@ export function DashboardMetricsTable() {
               data={laborQuery.data}
               globalFilter={laborFilter}
               onGlobalFilterChange={setLaborFilter}
+            />
+          </>
+        ) : null}
+
+        {dataset === "exports" &&
+        exportQuery.isSuccess &&
+        exportQuery.data.length > 0 ? (
+          <>
+            <p
+              className="mt-3 max-w-2xl text-sm text-muted-foreground"
+              id="table-exports-context"
+            >
+              Sort and filter by state. Re-exports use muted styling. Methodology and units
+              are summarized under the table; see the Notes tab for the full story.
+            </p>
+            <StateMetricsTableFilter
+              id="table-exports-filter"
+              label="Filter by state name"
+              value={exportFilter}
+              onChange={setExportFilter}
+            />
+            <StateExportProfilesDataTable
+              aria-describedby="table-exports-context"
+              aria-label="State export profile buckets by period"
+              data={exportQuery.data}
+              globalFilter={exportFilter}
+              onGlobalFilterChange={setExportFilter}
             />
           </>
         ) : null}
