@@ -11,6 +11,8 @@ type DashboardDatasetToggleProps = {
   className?: string;
   /** `bar`: no top margin, tighter grouping for horizontal control rows */
   variant?: "default" | "bar";
+  /** Smaller pills for dense toolbars (e.g. mobile expanded chart). */
+  size?: "default" | "compact";
 };
 
 export function DashboardDatasetToggle({
@@ -19,10 +21,12 @@ export function DashboardDatasetToggle({
   idPrefix,
   className,
   variant = "default",
+  size = "default",
 }: DashboardDatasetToggleProps) {
   const labelId = `${idPrefix}-dataset-label`;
   const groupId = `${idPrefix}-dataset`;
   const isBar = variant === "bar";
+  const compact = size === "compact";
 
   return (
     <div className={cn(!isBar && "mt-4", className)}>
@@ -37,7 +41,8 @@ export function DashboardDatasetToggle({
       <div
         aria-labelledby={labelId}
         className={cn(
-          "inline-flex flex-wrap gap-2",
+          "inline-flex flex-wrap",
+          compact ? "gap-1" : "gap-2",
           !isBar && "mt-2",
         )}
         id={groupId}
@@ -45,12 +50,14 @@ export function DashboardDatasetToggle({
       >
         <DatasetOption
           checked={value === "trade"}
+          compact={compact}
           id={`${idPrefix}-dataset-trade`}
           label="Trade"
           onSelect={() => onChange("trade")}
         />
         <DatasetOption
           checked={value === "labor"}
+          compact={compact}
           id={`${idPrefix}-dataset-labor`}
           label="Labor"
           onSelect={() => onChange("labor")}
@@ -64,16 +71,20 @@ type DatasetOptionProps = {
   id: string;
   label: string;
   checked: boolean;
+  compact?: boolean;
   onSelect: () => void;
 };
 
-function DatasetOption({ id, label, checked, onSelect }: DatasetOptionProps) {
+function DatasetOption({ id, label, checked, compact, onSelect }: DatasetOptionProps) {
   return (
     <button
       aria-checked={checked}
       className={cn(
-        "inline-flex min-h-10 min-w-[5.5rem] items-center justify-center rounded-lg border px-3 py-2 text-sm font-medium transition-colors",
+        "inline-flex items-center justify-center border font-medium transition-colors",
         "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+        compact
+          ? "h-8 min-h-8 min-w-[4.25rem] rounded-md px-2.5 text-xs"
+          : "min-h-10 min-w-[5.5rem] rounded-lg px-3 py-2 text-sm",
         checked
           ? "border-primary bg-primary text-primary-foreground"
           : "border-border bg-background text-foreground hover:bg-muted/80",

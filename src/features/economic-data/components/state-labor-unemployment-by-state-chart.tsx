@@ -2,6 +2,7 @@
 
 import { Dialog } from "@base-ui/react/dialog";
 import { ResponsiveBar } from "@nivo/bar";
+import { ChevronDown, Maximize2, Minimize2, Search } from "lucide-react";
 import {
   useCallback,
   useEffect,
@@ -333,24 +334,24 @@ export function LaborUnemploymentByStateChartBody({
             >
               <div
                 className={cn(
-                  "flex shrink-0 flex-wrap items-start justify-between gap-2 border-b border-border bg-card",
-                  "max-sm:sticky max-sm:top-0 max-sm:z-20 max-sm:px-2 max-sm:pb-1.5 max-sm:pt-[max(0.25rem,env(safe-area-inset-top))]",
-                  "sm:static sm:gap-2 sm:px-4 sm:py-2",
+                  "flex shrink-0 flex-wrap items-center justify-between gap-x-2 gap-y-1 border-b border-border bg-card",
+                  "max-sm:sticky max-sm:top-0 max-sm:z-20 max-sm:px-2 max-sm:py-1 max-sm:pt-[max(0.125rem,env(safe-area-inset-top))]",
+                  "sm:items-start sm:gap-2 sm:px-4 sm:py-2",
                 )}
               >
-                <div className="min-w-0 flex-1 space-y-0.5 pr-2 sm:pr-2">
-                  <Dialog.Title className="text-sm font-semibold tracking-tight sm:text-base">
+                <div className="min-w-0 flex-1 pr-1 sm:space-y-0.5 sm:pr-2">
+                  <Dialog.Title className="text-xs font-semibold leading-tight tracking-tight sm:text-base sm:leading-snug">
                     Unemployment by state — expanded
                   </Dialog.Title>
                   <Dialog.Description
-                    className="max-sm:sr-only text-xs text-muted-foreground sm:block sm:text-sm"
+                    className="mt-0.5 max-sm:sr-only text-xs text-muted-foreground sm:mt-0 sm:block sm:text-sm"
                     id={modalSummaryId}
                   >
                     2024 annual averages · Use controls to change sort, filter, or view ·
                     Close or Escape to exit
                   </Dialog.Description>
                 </div>
-                <div className="flex shrink-0 items-center gap-1 sm:gap-2">
+                <div className="flex shrink-0 items-center gap-0.5 sm:gap-2">
                   {isNarrow ? (
                     <Button
                       aria-controls={
@@ -359,13 +360,20 @@ export function LaborUnemploymentByStateChartBody({
                           : `${modalControlsId}-quick`
                       }
                       aria-expanded={showFullExpandedModalControls}
-                      className="h-8 shrink-0 px-2.5 text-xs"
+                      className="h-8 shrink-0 gap-0.5 px-2 text-xs text-muted-foreground hover:text-foreground"
                       size="sm"
                       type="button"
                       variant="ghost"
                       onClick={() => setMobileModalFullControls((v) => !v)}
                     >
                       {showFullExpandedModalControls ? "Hide controls" : "Show controls"}
+                      <ChevronDown
+                        aria-hidden
+                        className={cn(
+                          "size-3.5 opacity-70 transition-transform duration-200",
+                          showFullExpandedModalControls && "rotate-180",
+                        )}
+                      />
                     </Button>
                   ) : null}
                   <Dialog.Close
@@ -385,10 +393,26 @@ export function LaborUnemploymentByStateChartBody({
                 ref={expandedShellRef}
                 className={cn(
                   "flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden bg-card px-2 pb-2 pt-1 sm:gap-3 sm:px-3 sm:pb-3 sm:pt-3",
-                  "max-sm:gap-1",
+                  "max-sm:gap-1.5 max-sm:px-2 max-sm:pt-1 max-sm:pb-2",
                   "[&:fullscreen]:h-screen [&:fullscreen]:max-h-none [&:fullscreen]:w-screen [&:fullscreen]:gap-3 [&:fullscreen]:overflow-auto [&:fullscreen]:p-3",
                 )}
               >
+                {isNarrow && !showFullExpandedModalControls ? (
+                  <LaborExpandedModalMobileQuickRow
+                    dataset={dataset}
+                    densityGroupId={densityGroupId}
+                    fsActive={fsActive}
+                    headingId={headingId}
+                    nameFilter={nameFilter}
+                    quickControlsId={`${modalControlsId}-quick`}
+                    setNameFilter={setNameFilter}
+                    sortMode={sortMode}
+                    setSortMode={setSortMode}
+                    onDatasetChange={onDatasetChange}
+                    onToggleFullscreen={toggleFullscreen}
+                  />
+                ) : null}
+
                 {showFullExpandedModalControls ? (
                   <LaborExpandedDialogControls
                     dataset={dataset}
@@ -409,22 +433,6 @@ export function LaborUnemploymentByStateChartBody({
                   />
                 ) : null}
 
-                {isNarrow && !showFullExpandedModalControls ? (
-                  <LaborExpandedModalMobileQuickRow
-                    dataset={dataset}
-                    densityGroupId={densityGroupId}
-                    fsActive={fsActive}
-                    headingId={headingId}
-                    nameFilter={nameFilter}
-                    quickControlsId={`${modalControlsId}-quick`}
-                    setNameFilter={setNameFilter}
-                    sortMode={sortMode}
-                    setSortMode={setSortMode}
-                    onDatasetChange={onDatasetChange}
-                    onToggleFullscreen={toggleFullscreen}
-                  />
-                ) : null}
-
                 {!hasChartData ? (
                   <p className="text-sm text-muted-foreground" role="status">
                     No states match this filter.
@@ -432,7 +440,7 @@ export function LaborUnemploymentByStateChartBody({
                 ) : (
                   <>
                     <LaborExpandedStatusStrip
-                      compact={isNarrow && !showFullExpandedModalControls}
+                      compact={isNarrow}
                       insight={expandedInsight}
                       sortLabel={expandedSortLabel}
                       stateCount={visualTopToBottom.length}
@@ -441,16 +449,31 @@ export function LaborUnemploymentByStateChartBody({
                       Scroll the chart region vertically to see all states in the current
                       sort order.
                     </span>
-                    <div className="flex min-h-0 min-w-0 flex-1 flex-col">
+                    <div
+                      className={cn(
+                        "flex min-h-0 min-w-0 flex-1 flex-col",
+                        isNarrow &&
+                          "rounded-xl border border-border/70 bg-card p-1.5 shadow-sm",
+                      )}
+                    >
                       <LaborUnemploymentBarChartRegion
                         barData={barData}
                         density={expandedDensity}
+                        expandedMobileLayout={isNarrow}
                         maxRate={maxRate}
                         summaryId={`${modalSummaryId} ${summaryId} ${densityGroupId}`}
                         variant="expanded"
                         isNarrow={isNarrow}
                         isTablet={isTablet}
                       />
+                      {isNarrow ? (
+                        <p
+                          aria-hidden
+                          className="mt-1.5 shrink-0 text-center text-[11px] leading-tight text-muted-foreground"
+                        >
+                          Scroll to see all states.
+                        </p>
+                      ) : null}
                     </div>
                     <StateLaborUnemploymentByStateA11yTable
                       data={visualTopToBottom}
@@ -679,18 +702,25 @@ function LaborExpandedStatusStrip({
         />
         {stateCount} {stateCount === 1 ? "state" : "states"} shown
       </span>
-      <span aria-hidden className="hidden text-border sm:inline">
+      <span aria-hidden className="text-border/60">
         |
       </span>
       <span>
         Sorted: <span className="text-foreground">{sortLabel}</span>
       </span>
-      {insight && !compact ? (
+      {insight ? (
         <>
-          <span aria-hidden className="hidden text-border sm:inline">
+          <span aria-hidden className="text-border/60">
             |
           </span>
-          <span className="max-w-[min(100%,24rem)] text-foreground/90">{insight}</span>
+          <span
+            className={cn(
+              "max-w-[min(100%,24rem)] text-foreground/90",
+              compact && "text-[0.65rem] leading-snug text-foreground/85",
+            )}
+          >
+            {insight}
+          </span>
         </>
       ) : null}
     </div>
@@ -698,11 +728,11 @@ function LaborExpandedStatusStrip({
 }
 
 const mobileModalQuickSelectClass = cn(
-  "h-8 min-w-[6.5rem] max-w-[11rem] shrink rounded-md border border-input bg-background px-1.5 text-xs shadow-sm ring-offset-background",
+  "h-8 min-w-0 max-w-[9.25rem] flex-1 shrink rounded-md border border-input bg-background px-1.5 text-xs shadow-sm ring-offset-background",
   "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
 );
 
-/** One compact row: data, sort, filter (details), full screen — keeps the chart in view on phones. */
+/** Mobile expanded: single balanced toolbar (mockup-style) — chart stays high in the viewport. */
 function LaborExpandedModalMobileQuickRow({
   quickControlsId,
   headingId,
@@ -734,19 +764,20 @@ function LaborExpandedModalMobileQuickRow({
 
   return (
     <div
-      aria-label="Quick chart controls"
-      className="flex shrink-0 flex-wrap items-center gap-1.5 border-b border-border/50 pb-1.5 max-sm:-mx-2 max-sm:border-border/40 max-sm:px-2"
+      aria-label="Chart controls"
+      className="flex w-full min-w-0 shrink-0 flex-wrap items-center gap-1.5 rounded-lg border border-border/70 bg-muted/10 p-1.5"
       id={quickControlsId}
       role="group"
     >
       <DashboardDatasetToggle
-        className="min-w-0 shrink-0"
+        className="min-w-0 shrink-0 [&_[role=radiogroup]]:flex-nowrap"
         idPrefix={datasetPrefix}
+        size="compact"
         value={dataset}
         variant="bar"
         onChange={onDatasetChange}
       />
-      <div className="flex min-w-0 items-center gap-1">
+      <div className="flex min-w-0 max-w-[42%] flex-1 items-center sm:max-w-none">
         <label className="sr-only" htmlFor={sortSelectId}>
           Sort order
         </label>
@@ -756,12 +787,12 @@ function LaborExpandedModalMobileQuickRow({
           value={sortMode}
           onChange={(e) => setSortMode(e.target.value as LaborChartSortMode)}
         >
-          <option value="high-low">High → Low</option>
-          <option value="low-high">Low → High</option>
-          <option value="alphabetical">A–Z</option>
+          <option value="high-low">Sort: High → Low</option>
+          <option value="low-high">Sort: Low → High</option>
+          <option value="alphabetical">Sort: A–Z</option>
         </select>
       </div>
-      <details className="group relative min-w-0">
+      <details className="relative min-w-0 shrink-0">
         <summary
           aria-label={nameFilter.trim() ? "Filter states, filter active" : "Filter states"}
           className={cn(
@@ -770,12 +801,13 @@ function LaborExpandedModalMobileQuickRow({
             "[&::-webkit-details-marker]:hidden",
           )}
         >
+          <Search aria-hidden className="size-3.5 opacity-80" />
           <span aria-hidden>Filter</span>
           {nameFilter.trim() ? (
             <span aria-hidden className="size-1.5 rounded-full bg-primary" />
           ) : null}
         </summary>
-        <div className="absolute left-0 top-full z-30 mt-1 w-[min(calc(100vw-2rem),16rem)] rounded-md border border-border bg-popover p-2 shadow-md">
+        <div className="absolute right-0 top-full z-30 mt-1 w-[min(calc(100vw-2.5rem),17rem)] rounded-md border border-border bg-popover p-2 shadow-md">
           <label className="sr-only" htmlFor={filterId}>
             Search states by name
           </label>
@@ -783,7 +815,7 @@ function LaborExpandedModalMobileQuickRow({
             <input
               autoComplete="off"
               className={cn(
-                "h-8 w-full min-w-0 flex-1 rounded-md border border-input bg-background px-2 text-xs shadow-sm ring-offset-background placeholder:text-muted-foreground",
+                "h-8 w-full min-w-0 max-w-full flex-1 rounded-md border border-input bg-background px-2 text-xs shadow-sm ring-offset-background placeholder:text-muted-foreground",
                 "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
               )}
               id={filterId}
@@ -811,13 +843,18 @@ function LaborExpandedModalMobileQuickRow({
       </span>
       <Button
         aria-describedby={`${densityGroupId}-quick-fs-hint`}
-        className="ml-auto h-8 shrink-0 px-2 text-xs sm:ml-0"
-        size="sm"
+        aria-label={fsActive ? "Exit full screen" : "Enter full screen"}
+        className="ml-auto h-8 w-8 shrink-0 rounded-md p-0"
+        size="icon-sm"
         type="button"
         variant="outline"
         onClick={onToggleFullscreen}
       >
-        {fsActive ? "Exit" : "Full"}
+        {fsActive ? (
+          <Minimize2 aria-hidden className="size-3.5" />
+        ) : (
+          <Maximize2 aria-hidden className="size-3.5" />
+        )}
       </Button>
     </div>
   );
@@ -985,6 +1022,8 @@ type LaborUnemploymentBarChartRegionProps = {
   isNarrow: boolean;
   isTablet: boolean;
   summaryId: string;
+  /** Expanded modal on small screens: tighter margins, value scale on top, end labels. */
+  expandedMobileLayout?: boolean;
 };
 
 function LaborUnemploymentBarChartRegion({
@@ -995,11 +1034,18 @@ function LaborUnemploymentBarChartRegion({
   isNarrow,
   isTablet,
   summaryId,
+  expandedMobileLayout = false,
 }: LaborUnemploymentBarChartRegionProps) {
   const expanded = variant === "expanded";
   const compact = expanded && density === "compact";
+  const useTopValueAxis = expanded && expandedMobileLayout;
 
   const barMargins = useMemo(() => {
+    if (useTopValueAxis) {
+      return compact
+        ? ({ top: 46, right: 12, bottom: 20, left: 96 } as const)
+        : ({ top: 54, right: 14, bottom: 24, left: 108 } as const);
+    }
     if (expanded && compact) {
       return { top: 14, right: 24, bottom: 64, left: 168 } as const;
     }
@@ -1013,7 +1059,7 @@ function LaborUnemploymentBarChartRegion({
       return { top: 16, right: 22, bottom: 76, left: 164 } as const;
     }
     return { top: 18, right: 30, bottom: 76, left: 200 } as const;
-  }, [expanded, compact, isNarrow, isTablet]);
+  }, [useTopValueAxis, expanded, compact, isNarrow, isTablet]);
 
   const tickFontSize = expanded
     ? compact
@@ -1025,21 +1071,41 @@ function LaborUnemploymentBarChartRegion({
         ? 11
         : 12;
 
-  const rowPitch = expanded ? (compact ? 30 : 46) : 36;
+  const rowPitch = useMemo(() => {
+    if (useTopValueAxis) {
+      return compact ? 32 : 40;
+    }
+    if (expanded) {
+      return compact ? 30 : 46;
+    }
+    return 36;
+  }, [useTopValueAxis, expanded, compact]);
 
   const chartHeight = Math.min(
     2400,
     Math.max(
-      expanded ? 440 : 380,
-      barData.length * rowPitch + (expanded ? (compact ? 160 : 208) : 176),
+      expanded ? (useTopValueAxis ? 360 : 440) : 380,
+      barData.length * rowPitch + (expanded ? (compact ? 160 : useTopValueAxis ? 188 : 208) : 176),
     ),
   );
 
   const scrollClass = expanded
-    ? "min-h-0 min-w-0 flex-1 overflow-y-auto overflow-x-hidden rounded-md border bg-muted/20 shadow-[inset_0_0_0_1px_hsl(var(--border)_/_0.6)]"
+    ? useTopValueAxis
+      ? "min-h-0 min-w-0 flex-1 overflow-y-auto overflow-x-hidden rounded-md bg-muted/15"
+      : "min-h-0 min-w-0 flex-1 overflow-y-auto overflow-x-hidden rounded-md border bg-muted/20 shadow-[inset_0_0_0_1px_hsl(var(--border)_/_0.6)]"
     : "max-h-[min(72dvh,52rem)] overflow-y-auto overflow-x-hidden rounded-md border bg-muted/20 shadow-[inset_0_0_0_1px_hsl(var(--border)_/_0.6)] sm:max-h-[min(70vh,52rem)]";
 
-  const barPadding = expanded ? (compact ? 0.34 : 0.48) : isNarrow ? 0.42 : 0.46;
+  const barPadding = useTopValueAxis
+    ? compact
+      ? 0.36
+      : 0.42
+    : expanded
+      ? compact
+        ? 0.34
+        : 0.48
+      : isNarrow
+        ? 0.42
+        : 0.46;
 
   const legendFont = expanded
     ? compact
@@ -1049,8 +1115,17 @@ function LaborUnemploymentBarChartRegion({
       ? 11
       : 12;
 
-  const axisLeftTickPad =
-    expanded && compact ? 5 : isNarrow && !expanded ? 6 : expanded ? 12 : 10;
+  const axisLeftTickPad = useTopValueAxis
+    ? 5
+    : expanded && compact
+      ? 5
+      : isNarrow && !expanded
+        ? 6
+        : expanded
+          ? 12
+          : 10;
+
+  const valueAxisFormat = (v: string | number) => `${Math.round(Number(v))}%`;
 
   return (
     <div
@@ -1062,26 +1137,46 @@ function LaborUnemploymentBarChartRegion({
           <div
             className={cn(
               "w-full",
-              expanded ? "min-h-[280px] sm:min-h-[360px]" : "min-h-[280px] sm:min-h-[360px]",
+              expanded
+                ? useTopValueAxis
+                  ? "min-h-[220px] sm:min-h-[360px]"
+                  : "min-h-[280px] sm:min-h-[360px]"
+                : "min-h-[280px] sm:min-h-[360px]",
             )}
             style={{ height: chartHeight }}
           >
             <ResponsiveBar
               animate
-              axisBottom={{
-                format: (v) => `${Number(v).toFixed(1)}%`,
-                legend: "Unemployment Rate (%)",
-                legendOffset: expanded && compact ? 40 : isNarrow && !expanded ? 52 : 46,
-                tickPadding: compact ? 4 : 8,
-                tickRotation: isNarrow && !expanded ? -24 : 0,
-                tickValues: 5,
-              }}
+              axisBottom={
+                useTopValueAxis
+                  ? null
+                  : {
+                      format: (v) => `${Number(v).toFixed(1)}%`,
+                      legend: "Unemployment Rate (%)",
+                      legendOffset:
+                        expanded && compact ? 40 : isNarrow && !expanded ? 52 : 46,
+                      tickPadding: compact ? 4 : 8,
+                      tickRotation: isNarrow && !expanded ? -24 : 0,
+                      tickValues: 5,
+                    }
+              }
               axisLeft={{
                 tickSize: 0,
                 tickPadding: axisLeftTickPad,
               }}
               axisRight={null}
-              axisTop={null}
+              axisTop={
+                useTopValueAxis
+                  ? {
+                      format: valueAxisFormat,
+                      legend: "Unemployment Rate (%)",
+                      legendOffset: -40,
+                      tickPadding: 5,
+                      tickRotation: 0,
+                      tickValues: 5,
+                    }
+                  : null
+              }
               borderColor={{ from: "color", modifiers: [["darker", 0.55]] }}
               borderRadius={2}
               borderWidth={1}
@@ -1089,10 +1184,12 @@ function LaborUnemploymentBarChartRegion({
               data={barData}
               enableGridX
               enableGridY={false}
-              enableLabel={false}
+              enableLabel={useTopValueAxis}
               indexBy="stateName"
+              labelSkipWidth={useTopValueAxis ? 10 : 0}
               isFocusable={false}
               keys={["value"]}
+              labelTextColor="#15803d"
               layout="horizontal"
               margin={barMargins}
               padding={barPadding}
