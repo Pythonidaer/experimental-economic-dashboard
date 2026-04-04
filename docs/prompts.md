@@ -4,6 +4,8 @@ Do not try to build the final version all at once.
 Implement only the current phase cleanly.
 Prefer simple, readable code over clever abstractions.
 
+---
+
 ## Prompt: Read docs first
 Before making changes, read:
 - docs/project-overview.md
@@ -13,31 +15,29 @@ Before making changes, read:
 - docs/done-criteria.md
 - docs/decisions.md
 
-Supabase password: @VBQ4y2#a6%%J#4
-
-
-
 Then explain:
 1. what you think this project is
 2. what you are about to build
 3. which files you plan to create or edit
-4. how the task fits the MVP
+4. how the task fits the current phase
 
 Do not code until you summarize that.
 
 ---
 
-## Prompt: Implement one phase
+## Prompt: Implement a scoped task
 Read the docs folder first.
 
-Implement Phase [X] from docs/implementation-plan.md.
+Implement the following task:
+[PASTE TASK]
 
 Requirements:
 - follow docs/architecture.md
 - keep components small and focused
-- use accessible shadcn/ui + Radix-based components where appropriate
+- use accessible shadcn/ui + Radix components where appropriate
 - keep data logic separate from presentation
 - satisfy docs/done-criteria.md
+- do not expand scope beyond the task
 
 At the end:
 - list every file created or changed
@@ -73,10 +73,10 @@ Add the following feature:
 
 Constraints:
 - do not introduce unnecessary abstraction
-- keep MVP scope in mind
+- keep current scope in mind
 - preserve accessibility
-- preserve current behavior unless the feature requires otherwise
-- explain tradeoffs before implementing if the feature affects architecture
+- preserve current behavior unless required
+- explain tradeoffs before implementing if architecture is affected
 
 At the end:
 - list files changed
@@ -122,3 +122,23 @@ At the end:
 - summarize root cause
 - list files changed
 - mention any edge cases not fully covered
+
+---
+
+## Prompt: Sync documentation
+Read the docs folder first.
+
+Audit all documentation against the current implementation.
+
+Tasks:
+- identify outdated or incorrect statements
+- update docs to reflect actual behavior and structure
+- remove contradictions and stale information
+- keep docs clean and focused
+
+Do NOT change application code.
+
+At the end:
+- list all docs updated
+- explain what was outdated
+- confirm docs now match the current codebase

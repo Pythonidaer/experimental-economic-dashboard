@@ -6,33 +6,30 @@ import { useMemo } from "react";
 import { ViewEmpty } from "@/components/data-view/view-empty";
 import { ViewError } from "@/components/data-view/view-error";
 import { ViewLoading } from "@/components/data-view/view-loading";
-import { StateTradeTotalByStateA11yTable } from "@/features/economic-data/components/state-trade-total-by-state-a11y-table";
-import { useStateTradeMetrics } from "@/features/economic-data/hooks/use-state-trade-metrics";
-import {
-  formatTradeCurrency,
-  formatTradeCurrencyCompact,
-} from "@/features/economic-data/utils/format-trade-currency";
-import { buildTotalTradeByStateBarData } from "@/features/economic-data/utils/total-trade-by-state-chart-data";
+import { StateLaborUnemploymentByStateA11yTable } from "@/features/economic-data/components/state-labor-unemployment-by-state-a11y-table";
+import { useStateLaborMetrics } from "@/features/economic-data/hooks/use-state-labor-metrics";
+import { formatUnemploymentRate } from "@/features/economic-data/utils/format-labor-metrics";
+import { buildLatestUnemploymentByStateBarData } from "@/features/economic-data/utils/unemployment-by-state-chart-data";
 import { useMediaQuery } from "@/lib/hooks/use-media-query";
 
-type TradeChartSummaryProps = {
+type LaborChartSummaryProps = {
   summaryId: string;
   headingId: string;
 };
 
 /**
- * Trade horizontal bar chart + SR table (no outer section chrome).
+ * Labor: horizontal bars of unemployment rate (latest year per state) + SR table.
  */
-export function TradeTotalByStateChartBody({
+export function LaborUnemploymentByStateChartBody({
   summaryId,
   headingId,
-}: TradeChartSummaryProps) {
-  const { data, error, isPending, isError, isSuccess } = useStateTradeMetrics();
+}: LaborChartSummaryProps) {
+  const { data, error, isPending, isError, isSuccess } = useStateLaborMetrics();
   const isNarrow = useMediaQuery("(max-width: 639px)");
   const isTablet = useMediaQuery("(min-width: 640px) and (max-width: 1023px)");
 
   const nivoData = useMemo(
-    () => (data?.length ? buildTotalTradeByStateBarData(data) : []),
+    () => (data?.length ? buildLatestUnemploymentByStateBarData(data) : []),
     [data],
   );
 
@@ -53,6 +50,11 @@ export function TradeTotalByStateChartBody({
 
   const tickFontSize = isNarrow ? 10 : isTablet ? 11 : 12;
 
+  const datumList = useMemo(
+    () => nivoData.map((d) => ({ ...d, rateLabel: d.value })),
+    [nivoData],
+  );
+
   return (
     <>
       {isPending ? <ViewLoading message="Loading chart data…" /> : null}
@@ -63,9 +65,12 @@ export function TradeTotalByStateChartBody({
         />
       ) : null}
       {isSuccess && data.length === 0 ? (
-        <ViewEmpty description="No trade rows to chart yet." />
+        <ViewEmpty description="No labor rows to chart yet." />
       ) : null}
-      {isSuccess && data.length > 0 ? (
+      {isSuccess && data.length > 0 && nivoData.length === 0 ? (
+        <ViewEmpty description="Labor rows are present but unemployment values are missing." />
+      ) : null}
+      {isSuccess && nivoData.length > 0 ? (
         <div className="not-prose">
           <div aria-hidden="true">
             <div className="max-h-[min(72dvh,52rem)] overflow-y-auto overflow-x-hidden rounded-md border bg-muted/20 sm:max-h-[min(70vh,52rem)]">
@@ -73,8 +78,8 @@ export function TradeTotalByStateChartBody({
                 <ResponsiveBar
                   animate
                   axisBottom={{
-                    format: (v) => formatTradeCurrencyCompact(Number(v)),
-                    legend: "Total trade (USD)",
+                    format: (v) => `${Number(v).toFixed(1)}%`,
+                    legend: "Unemployment rate",
                     legendOffset: isNarrow ? 48 : 40,
                     tickRotation: isNarrow ? -28 : 0,
                   }}
@@ -85,15 +90,15 @@ export function TradeTotalByStateChartBody({
                   axisRight={null}
                   axisTop={null}
                   borderRadius={2}
-                  borderColor="#1e3a8a"
+                  borderColor="#14532d"
                   borderWidth={1}
-                  colors={() => "#2563eb"}
-                  data={nivoData}
+                  colors={() => "#15803d"}
+                  data={datumList}
                   enableGridY
                   enableLabel={false}
                   indexBy="stateName"
                   isFocusable={false}
-                  keys={["value"]}
+                  keys={["rateLabel"]}
                   layout="horizontal"
                   margin={barMargins}
                   padding={isNarrow ? 0.38 : 0.42}
@@ -116,17 +121,18 @@ export function TradeTotalByStateChartBody({
                     <div className="rounded border border-border bg-popover px-3 py-2 text-xs text-popover-foreground shadow-md">
                       <strong className="font-medium">{row.stateName}</strong>{" "}
                       <span className="text-muted-foreground">({row.stateCode})</span>
+                      <div className="mt-0.5 text-muted-foreground">Year {row.year}</div>
                       <div className="mt-1 tabular-nums">
-                        {formatTradeCurrency(Number(value))}
+                        {formatUnemploymentRate(Number(value))}
                       </div>
                     </div>
                   )}
-                  valueFormat={(v) => formatTradeCurrency(Number(v))}
+                  valueFormat={(v) => formatUnemploymentRate(Number(v))}
                 />
               </div>
             </div>
           </div>
-          <StateTradeTotalByStateA11yTable
+          <StateLaborUnemploymentByStateA11yTable
             data={nivoData}
             describedBy={summaryId}
             labelledBy={headingId}

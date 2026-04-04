@@ -57,7 +57,7 @@ export function StateDetailsPanel({
           State details
         </h3>
         <p className="mt-1 text-xs text-muted-foreground">
-          Choose a state here or on the map. Metrics mirror the Table tab dataset.
+          Choose a state here or on the map. Figures match the Table tab (Trade view).
         </p>
       </div>
 
@@ -95,7 +95,7 @@ export function StateDetailsPanel({
 
       {!selected ? (
         <p className="text-sm text-muted-foreground">
-          Pick a state to see its trade metrics from Supabase.
+          Pick a state to see imports, exports, and total trade by year.
         </p>
       ) : (
         <div className="space-y-2">
@@ -112,8 +112,7 @@ export function StateDetailsPanel({
             />
           ) : metrics.length === 0 ? (
             <p className="text-sm text-muted-foreground">
-              No trade rows for this state in <code className="text-xs">state_trade_metrics</code>
-              . Seed data or check codes match.
+              No trade figures for this state yet, or the state code may not match your data.
             </p>
           ) : (
             <ul className="max-h-64 space-y-2 overflow-y-auto text-sm sm:max-h-48">

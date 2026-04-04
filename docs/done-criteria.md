@@ -3,24 +3,45 @@
 A task is only done when:
 
 - the code compiles
-- the relevant UI renders
+- the relevant UI renders as expected
 - TypeScript errors are resolved
 - obvious linting issues are resolved
-- loading/error/empty states are handled if data is involved
+- loading, error, and empty states are handled if data is involved
 - accessibility basics are handled
-- the code matches the documentation and architecture guidance
-- the task checklist item is updated if applicable
+- the implementation matches current documentation and architecture guidance
+- the related checklist item is updated, if applicable
+
+---
 
 ## For UI Components
+
 - keyboard accessible
 - labeled appropriately
-- responsive enough for common viewport sizes
+- responsive across common viewport sizes
+- no obvious broken states for long text, empty values, or narrow screens
+
+---
 
 ## For Data Features
+
 - query logic is separated from presentational components
-- data loading and error states are visible
+- loading, error, and empty states are visible
 - types are defined
+- data shape is validated before rendering
+- frontend behavior matches the actual database schema in use
+
+---
 
 ## For Map Features
-- non-map fallback access to the same data exists
-- selected state is visually and programmatically clear
+
+- non-map access to the same data exists
+- selected state is visually clear
+- selected state is programmatically clear
+- map interactions do not block access to table or chart views
+
+---
+
+## Notes
+
+- "Done" does not mean perfect; it means production-ready for the current stage
+- If documentation is outdated, either update it or explicitly note the mismatch before considering the task complete

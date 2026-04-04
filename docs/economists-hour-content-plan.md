@@ -1,43 +1,61 @@
 # The Economist's Hour — Content Plan
 
 ## Purpose
-This document organizes glossary, topic, people, institution, and event content inspired by themes and index entries from *The Economist's Hour*.
+This document organizes glossary and topic content inspired by themes and index entries from *The Economist's Hour*.
 
 The goal is to support:
-- a glossary system
-- article/topic pages
-- future links between knowledge pages and dashboard datasets
+- a complete glossary system (primary focus)
+- topic/article pages (secondary)
+- future connections between knowledge content and dashboard datasets
 
-This is a content-planning and architecture document, not a final statement that every listed entry must be created immediately.
+This is a planning and execution document for building out the full glossary.
+
+---
+
+## Content Model
+
+- glossary (primary system)
+- topics (secondary system)
+
+Notes:
+- People, institutions, and events are represented as glossary entries
+- No separate route systems for people, institutions, or events
+
+---
+
+## Routes
+
+- /glossary
+- /glossary/[slug]
+- /topics
+- /topics/[slug]
+
+---
+
+## Execution Priority
+
+The glossary is intended to be built out fully before shifting focus to data ingestion and visualization.
+
+Topics can be developed alongside or after glossary completion.
 
 ---
 
 ## Priority Levels
 
 ### P1 — build first
-These are the best initial entries because they connect directly to current or near-term dashboard datasets.
+Core concepts that directly support understanding of economic data and dashboard features.
 
 ### P2 — build next
-Important supporting concepts and institutions.
+Supporting concepts and systems that deepen understanding.
 
 ### P3 — build later
-Long-tail enrichment, supporting figures, and secondary topics.
+Long-tail enrichment and secondary figures.
 
 ---
 
-## Content Types
+## P1 Glossary Entries
 
-- glossary: short concept/term definitions
-- people: important economists and public figures
-- institutions: agencies, banks, and organizations
-- events: major historical episodes
-- topics: broader article-style pages that connect many terms
-
----
-
-# P1 Glossary Entries
-
-## Core economic concepts
+### Core economic concepts
 - Inflation
 - Unemployment
 - Economic growth
@@ -55,7 +73,7 @@ Long-tail enrichment, supporting figures, and secondary topics.
 - Wages
 - Labor unions
 
-## Economic schools / frameworks
+### Economic schools / frameworks
 - Keynesian economics
 - Monetarism
 - Supply-side economics
@@ -65,7 +83,7 @@ Long-tail enrichment, supporting figures, and secondary topics.
 
 ---
 
-# P1 Institutions
+## P1 Institutions (represented as glossary entries)
 
 - Federal Reserve
 - International Monetary Fund (IMF)
@@ -78,7 +96,7 @@ Long-tail enrichment, supporting figures, and secondary topics.
 
 ---
 
-# P1 Events / Systems
+## P1 Events / Systems (represented as glossary entries)
 
 - Bretton Woods system
 - Great Depression
@@ -91,7 +109,7 @@ Long-tail enrichment, supporting figures, and secondary topics.
 
 ---
 
-# P1 People
+## P1 People (represented as glossary entries)
 
 - Milton Friedman
 - John Maynard Keynes
@@ -106,7 +124,7 @@ Long-tail enrichment, supporting figures, and secondary topics.
 
 ---
 
-# P1 Topic / Article Pages
+## P1 Topic / Article Pages
 
 - How Trade Shapes State Economies
 - What the Federal Reserve Actually Does
@@ -119,7 +137,7 @@ Long-tail enrichment, supporting figures, and secondary topics.
 
 ---
 
-# P2 Glossary Entries
+## P2 Glossary Entries
 
 - Banking regulation
 - Credit derivatives
@@ -139,7 +157,7 @@ Long-tail enrichment, supporting figures, and secondary topics.
 
 ---
 
-# P2 Institutions
+## P2 Institutions (glossary entries)
 
 - European Central Bank
 - Bank for International Settlements
@@ -152,7 +170,7 @@ Long-tail enrichment, supporting figures, and secondary topics.
 
 ---
 
-# P2 People
+## P2 People (glossary entries)
 
 - Arthur Burns
 - Lawrence Summers
@@ -170,7 +188,7 @@ Long-tail enrichment, supporting figures, and secondary topics.
 
 ---
 
-# P2 Events / Systems
+## P2 Events / Systems (glossary entries)
 
 - Airline deregulation
 - Savings and loan crisis
@@ -182,7 +200,7 @@ Long-tail enrichment, supporting figures, and secondary topics.
 
 ---
 
-# P2 Topic / Article Pages
+## P2 Topic / Article Pages
 
 - The Rise of Market Thinking
 - The Role of Economists in Public Policy
@@ -193,7 +211,7 @@ Long-tail enrichment, supporting figures, and secondary topics.
 
 ---
 
-# P3 People / Long-tail Enrichment
+## P3 People / Long-tail Enrichment (glossary entries)
 
 - Ronald Reagan
 - Richard Nixon
@@ -213,9 +231,12 @@ Long-tail enrichment, supporting figures, and secondary topics.
 
 ---
 
-# Planned Data Connections
+## Data Connections
 
-## Existing dataset
+These mappings indicate how glossary concepts relate to datasets.
+
+They guide future integration but do not require immediate implementation.
+
 ### state_trade_metrics
 Related concepts:
 - Globalization
@@ -225,7 +246,6 @@ Related concepts:
 - Capital flows
 - Economic growth
 
-## Next dataset
 ### state_labor_metrics
 Related concepts:
 - Unemployment
@@ -235,50 +255,25 @@ Related concepts:
 - Employment
 - Labor force participation
 
-## Future dataset
-### state_industries
-Related concepts:
-- Industrial policy
-- Corporate concentration
-- Globalization
-- Deregulation
-
-## Future dataset
-### bank_and_finance_entities
-Related concepts:
-- Banking regulation
-- Credit derivatives
-- Financial crisis
-- Federal Reserve
+### Future datasets (exploratory)
+- state_industries
+- bank_and_finance_entities
 
 ---
 
-# Site Architecture Direction
+## MVP Scope
 
-## Planned routes
-- /glossary
-- /glossary/[slug]
-- /topics
-- /topics/[slug]
-- /people
-- /people/[slug]
-- /institutions
-- /institutions/[slug]
-- /events
-- /events/[slug]
+MVP includes:
+- full glossary implementation
+- initial topic pages
 
-## MVP content scope
-Start with:
-- glossary
-- topics
-
-People, institutions, and events can be supported in the data model now, even if their list/detail routes are added later.
+Data integration and visualization follow after glossary completion.
 
 ---
 
-# Initial Seed Content for MVP
+## Initial Seed Content for MVP
 
-## Glossary seed entries
+### Glossary seed entries
 - Milton Friedman
 - Keynesian economics
 - Cost-benefit analysis
@@ -288,7 +283,7 @@ People, institutions, and events can be supported in the data model now, even if
 - Unemployment
 - Monetary policy
 
-## Topic seed pages
+### Topic seed pages
 - The Rise of Market Thinking
 - Antitrust and Corporate Power
 - Globalization Through Trade Data

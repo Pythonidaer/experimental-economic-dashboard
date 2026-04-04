@@ -3,20 +3,20 @@
 import { useQuery, type UseQueryOptions } from "@tanstack/react-query";
 
 import {
-  selectStateTradeMetrics,
-  type StateTradeMetricsFilter,
-} from "@/features/economic-data/queries/state-trade-metrics";
+  selectStateLaborMetrics,
+  type StateLaborMetricsFilter,
+} from "@/features/economic-data/queries/state-labor-metrics";
 import { economicDataQueryKeys } from "@/features/economic-data/utils/query-keys";
-import type { StateTradeMetricRow } from "@/features/economic-data/types/database";
+import type { StateLaborMetricRow } from "@/features/economic-data/types/database";
 import { getSupabaseBrowserClient } from "@/lib/supabase/browser-client";
 import { isSupabasePublicConfigReady } from "@/lib/supabase/env";
 
-export function useStateTradeMetrics(
-  filter?: StateTradeMetricsFilter,
-  options?: Pick<UseQueryOptions<StateTradeMetricRow[]>, "enabled">,
+export function useStateLaborMetrics(
+  filter?: StateLaborMetricsFilter,
+  options?: Pick<UseQueryOptions<StateLaborMetricRow[]>, "enabled">,
 ) {
   return useQuery({
-    queryKey: economicDataQueryKeys.stateTradeMetrics.list(filter),
+    queryKey: economicDataQueryKeys.stateLaborMetrics.list(filter),
     enabled: options?.enabled !== false,
     queryFn: async () => {
       if (!isSupabasePublicConfigReady()) {
@@ -25,7 +25,7 @@ export function useStateTradeMetrics(
         );
       }
       const client = getSupabaseBrowserClient();
-      const { data, error } = await selectStateTradeMetrics(client, filter);
+      const { data, error } = await selectStateLaborMetrics(client, filter);
       if (error) {
         throw new Error(error.message);
       }

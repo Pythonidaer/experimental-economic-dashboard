@@ -26,7 +26,7 @@ export default function GlossaryIndexPage() {
   const railLetters = getAlphabetRailLetters(presentLetters.includes("#"));
 
   return (
-    <div className="mx-auto w-full max-w-7xl px-3 py-5 sm:px-6 sm:py-8 lg:px-8 lg:py-10">
+    <div className="mx-auto w-full max-w-7xl px-4 py-5 sm:px-6 sm:py-8 lg:px-8 lg:py-10">
       <div className="mx-auto flex w-full max-w-[72rem] flex-col lg:flex-row lg:items-stretch lg:justify-center lg:gap-6">
         <div className="min-w-0 w-full lg:max-w-3xl lg:shrink-0">
           <div className="w-full">
@@ -61,17 +61,14 @@ export default function GlossaryIndexPage() {
               railLetters={railLetters}
               pagePrefix={GLOSSARY_INDEX_PREFIX}
               variant="compact"
-              className="lg:hidden -mx-3 mb-1 px-3 sm:-mx-6 sm:mb-2 sm:px-6"
+              className="lg:hidden -mx-4 mb-1 px-4 sm:-mx-6 sm:mb-2 sm:px-6"
             />
 
             <div className="border-t border-border pt-4 sm:pt-6 lg:pt-8">
               {buckets.map((bucket, index) => {
                 const sectionId = alphabetSectionId(GLOSSARY_INDEX_PREFIX, bucket.letter);
                 const titleId = `${sectionId}-title`;
-                const srLetterLabel =
-                  bucket.letter === "#"
-                    ? "numerals or non-Latin characters"
-                    : `the letter ${bucket.letter}`;
+                const letterLabel = bucket.letter === "#" ? "Other" : bucket.letter;
                 return (
                   <section
                     key={bucket.letter}
@@ -82,8 +79,17 @@ export default function GlossaryIndexPage() {
                     )}
                     id={sectionId}
                   >
-                    <h2 id={titleId} className="sr-only">
-                      Glossary entries starting with {srLetterLabel}
+                    <h2
+                      id={titleId}
+                      className="mb-3 text-lg font-semibold tracking-tight text-foreground sm:mb-4 sm:text-xl"
+                    >
+                      <span aria-hidden="true">{letterLabel}</span>
+                      <span className="sr-only">
+                        Glossary entries starting with{" "}
+                        {bucket.letter === "#"
+                          ? "a numeral or a non-Latin character"
+                          : `the letter ${bucket.letter}`}
+                      </span>
                     </h2>
                     <ul className="flex flex-col gap-3 lg:gap-0 lg:divide-y lg:divide-border">
                       {bucket.items.map((entry) => (

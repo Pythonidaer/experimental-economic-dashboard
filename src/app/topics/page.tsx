@@ -66,10 +66,7 @@ export default function TopicsIndexPage() {
               {buckets.map((bucket, index) => {
                 const sectionId = alphabetSectionId(TOPICS_INDEX_PREFIX, bucket.letter);
                 const titleId = `${sectionId}-title`;
-                const srLetterLabel =
-                  bucket.letter === "#"
-                    ? "numerals or non-Latin characters"
-                    : `the letter ${bucket.letter}`;
+                const letterLabel = bucket.letter === "#" ? "Other" : bucket.letter;
                 return (
                   <section
                     key={bucket.letter}
@@ -80,8 +77,17 @@ export default function TopicsIndexPage() {
                     )}
                     id={sectionId}
                   >
-                    <h2 id={titleId} className="sr-only">
-                      Topics starting with {srLetterLabel}
+                    <h2
+                      id={titleId}
+                      className="mb-3 text-lg font-semibold tracking-tight text-foreground sm:mb-4 sm:text-xl"
+                    >
+                      <span aria-hidden="true">{letterLabel}</span>
+                      <span className="sr-only">
+                        Topics starting with{" "}
+                        {bucket.letter === "#"
+                          ? "a numeral or a non-Latin character"
+                          : `the letter ${bucket.letter}`}
+                      </span>
                     </h2>
                     <ul className="flex flex-col gap-3 lg:gap-0 lg:divide-y lg:divide-border">
                       {bucket.items.map((item) => (

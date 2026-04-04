@@ -8,26 +8,26 @@ export function OverviewPlaceholder() {
         Overview
       </h2>
       <p className="mt-2 max-w-2xl text-sm text-muted-foreground">
-        This dashboard will surface state-level economic data through an interactive
-        map, a sortable table, and charts. Use the tabs to move between views; map data
-        will also be available outside the map, per accessibility goals.
+        Browse state-level economic data on a map, in sortable tables, and in simple
+        charts. Everything you see on the map is also available outside it so you can
+        explore without relying on geography alone.
       </p>
       <ul className="mt-4 list-disc space-y-1.5 pl-5 text-sm leading-relaxed text-muted-foreground">
         <li>
-          <strong className="font-medium text-foreground">Map</strong> — state-level
-          geography (MapLibre) with an accessible state picker
+          <strong className="font-medium text-foreground">Map</strong> — click states
+          or pick from a list
         </li>
         <li>
-          <strong className="font-medium text-foreground">Table</strong> — sortable,
-          filterable metrics (TanStack Table)
+          <strong className="font-medium text-foreground">Table</strong> — sort and
+          filter; switch between trade and labor
         </li>
         <li>
-          <strong className="font-medium text-foreground">Charts</strong> — summary
-          bar chart (Nivo) on the same dataset
+          <strong className="font-medium text-foreground">Charts</strong> — quick
+          state comparisons for the same categories
         </li>
         <li>
-          <strong className="font-medium text-foreground">Notes</strong> — context and
-          methodology
+          <strong className="font-medium text-foreground">Notes</strong> — roadmap for
+          data and methodology
         </li>
       </ul>
     </section>

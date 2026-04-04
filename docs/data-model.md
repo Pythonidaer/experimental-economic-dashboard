@@ -1,45 +1,74 @@
-# Data Model
+Data Model
+Current Tables
+state_trade_metrics
+Purpose:
 
-## Initial Recommendation
-Start with one table only.
+Core dataset for trade-based dashboard views (map, charts, tables)
+Fields:
 
-Example: state_trade_metrics
+id (uuid, primary key)
+state_code (text, indexed)
+state_name (text)
+year (int8, indexed)
+import_value (numeric)
+export_value (numeric)
+total_trade_value (numeric)
+created_at (timestamptz)
+state_labor_metrics
+Purpose:
 
-## state_trade_metrics
-- id
-- state_code
-- state_name
-- year
-- import_value
-- export_value
-- total_trade_value
-- created_at
+Supports labor and workforce-related insights
+Fields:
 
-## Future Tables
-### states
-- id
-- state_code
-- state_name
-- region
+id (uuid, primary key)
+state_code (text, indexed)
+state_name (text)
+year (int8, indexed)
+unemployment_rate (numeric)
+avg_wage (numeric)
+labor_force_participation (numeric)
+created_at (timestamptz)
+Current Schema Strategy
+Keep tables flat and query-friendly
+Avoid premature normalization
+Optimize for dashboard queries (map, table, charts)
+Prefer duplicating simple fields (like state_name) over joins
+Add new tables only when there is a clear frontend use case
+Frontend Integration Status
+state_trade_metrics: integrated (or primary working dataset)
+state_labor_metrics: not yet integrated
+Query Expectations
+Tables should support:
 
-### state_job_metrics
-- id
-- state_code
-- year
-- total_jobs
-- unemployment_rate
-- sector_name
+filtering by state
+filtering by year
+sorting by metric values
+aggregations for charts and comparisons
+Avoid joins for now.
 
-### banks
-- id
-- bank_name
-- state_code
-- bank_type
-- description
-- headquarters_city
-- headquarters_state
+Indexing Guidance
+Add indexes for:
 
-## Notes
-- Do not over-normalize for MVP
-- Prefer a practical schema that is easy to query
-- Normalize later if the dataset grows significantly
+state_code
+year
+Optional:
+
+composite index (state_code, year)
+Future Expansion Notes
+Potential future datasets (exploratory):
+
+trade by product by state
+banks by state
+population by state
+jobs by sector
+industry reference data
+job posting ingestion (e.g. scraping platforms like Greenhouse)
+These should NOT be implemented until:
+
+a reliable data source is identified
+update frequency is understood
+a clear frontend use case exists
+Notes
+This document reflects the CURRENT database state
+Future ideas are exploratory and should not drive schema changes prematurely
+Prioritize clarity, performance, and real use cases over completeness

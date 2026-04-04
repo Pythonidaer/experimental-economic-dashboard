@@ -8,14 +8,19 @@ export function NotesPlaceholder() {
         Notes
       </h2>
       <p className="mt-2 max-w-2xl text-sm text-muted-foreground">
-        Space for methodology, data sources, and disclaimers as the project grows.
+        Checklist for growing the data behind this dashboard.
       </p>
-      <div
-        className="mt-4 rounded-md border border-muted bg-muted/20 p-4 text-sm text-muted-foreground"
-        role="status"
-      >
-        Notes content will go here.
-      </div>
+      <ol className="mt-4 list-decimal space-y-2 pl-5 text-sm leading-relaxed text-muted-foreground">
+        <li>Identify reliable public sources for trade, labor, banking, and macro data.</li>
+        <li>Verify update frequency and licensing for each source.</li>
+        <li>Decide which datasets belong in the dashboard first.</li>
+        <li>Define cleaning and normalization rules before import.</li>
+        <li>Document reliability checks and source caveats for users.</li>
+        <li>
+          Plan scripted collection only where public releases truly fall short—prefer
+          official feeds first.
+        </li>
+      </ol>
     </section>
   );
 }

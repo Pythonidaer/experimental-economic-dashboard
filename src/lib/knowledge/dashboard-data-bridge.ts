@@ -26,17 +26,17 @@ function labelForTab(tab: DashboardTabValue, suffix: string): DashboardDataLink 
 
 function tradeTriple(): DashboardDataLink[] {
   return [
-    labelForTab(TAB.map, "state trade on the map"),
-    labelForTab(TAB.table, "state_trade_metrics rows"),
-    labelForTab(TAB.charts, "totals by state chart"),
+    labelForTab(TAB.map, "trade on the map"),
+    labelForTab(TAB.table, "trade and labor tables"),
+    labelForTab(TAB.charts, "trade and labor charts"),
   ];
 }
 
 const LABOR_ROADMAP_FOOTNOTE =
-  "Dashboard panels are state trade metrics for now; unemployment and wages pages link here as the nearest geographic context until state_labor_metrics ships.";
+  "Open the Table or Charts tab and choose Labor for unemployment and wages; the map still highlights trade.";
 
 /**
- * Only glossary slugs with a direct tie to live `state_trade_metrics` or the near-term labor roadmap
+ * Only glossary slugs with a direct tie to live dashboard data or the labor layer
  * (see docs/economists-hour-content-plan.md) get dashboard bridges — everything else routes via topics.
  */
 const GLOSSARY_DASHBOARD: Record<string, DashboardLinksForKnowledge> = {
@@ -70,13 +70,3 @@ export function getDashboardBridgeForTopicSlug(
 ): DashboardLinksForKnowledge | null {
   return TOPIC_DASHBOARD[slug] ?? null;
 }
-
-/** Concepts surfaced on dashboard tabs (Map / Table / Charts). */
-export const DASHBOARD_TAB_GLOSSARY_CONCEPTS: Record<
-  "map" | "table" | "charts",
-  readonly string[]
-> = {
-  map: ["globalization", "trade-deficit", "capital-flows", "economic-growth"],
-  table: ["trade-surplus", "trade-deficit", "globalization", "exchange-rates"],
-  charts: ["globalization", "economic-growth", "trade-surplus"],
-};

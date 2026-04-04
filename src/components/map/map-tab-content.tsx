@@ -4,7 +4,6 @@ import { useMemo, useState } from "react";
 
 import { ViewError } from "@/components/data-view/view-error";
 import { ViewLoading } from "@/components/data-view/view-loading";
-import { DashboardRelatedConcepts } from "@/components/knowledge/dashboard-related-concepts";
 import { useStateTradeMetrics } from "@/features/economic-data/hooks/use-state-trade-metrics";
 import { useUsStatesGeoJson } from "@/features/economic-data/hooks/use-us-states-geojson";
 import type { UsStateSelection } from "@/lib/map/types";
@@ -50,10 +49,9 @@ export function MapTabContent() {
         Map
       </h2>
       <p className="mt-2 max-w-2xl text-sm text-muted-foreground">
-        Click a state on the map or use the <strong className="font-medium text-foreground">State</strong>{" "}
-        menu in the details panel. The same metrics appear in the Table tab.
+        Click a state on the map or choose one from the <strong className="font-medium text-foreground">State</strong>{" "}
+        menu in the panel. Imports, exports, and totals also appear in the Table tab under Trade.
       </p>
-      <DashboardRelatedConcepts tab="map" />
 
       {geoPending ? (
         <div className="mt-4">

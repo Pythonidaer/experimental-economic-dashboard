@@ -47,6 +47,39 @@ export type Database = {
         };
         Relationships: [];
       };
+      state_labor_metrics: {
+        Row: {
+          id: string;
+          state_code: string;
+          state_name: string;
+          year: number;
+          unemployment_rate: number;
+          avg_wage: number;
+          labor_force_participation: number;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          state_code: string;
+          state_name: string;
+          year: number;
+          unemployment_rate: number;
+          avg_wage: number;
+          labor_force_participation: number;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          state_code?: string;
+          state_name?: string;
+          year?: number;
+          unemployment_rate?: number;
+          avg_wage?: number;
+          labor_force_participation?: number;
+          created_at?: string;
+        };
+        Relationships: [];
+      };
     };
     Views: Record<string, never>;
     Functions: Record<string, never>;
@@ -57,3 +90,6 @@ export type Database = {
 
 export type StateTradeMetricRow =
   Database["public"]["Tables"]["state_trade_metrics"]["Row"];
+
+export type StateLaborMetricRow =
+  Database["public"]["Tables"]["state_labor_metrics"]["Row"];

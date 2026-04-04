@@ -1,5 +1,5 @@
-import { StateTradeTotalByStateChart } from "@/features/economic-data/components/state-trade-total-by-state-chart";
+import { DashboardChartsPanel } from "@/features/economic-data/components/dashboard-charts-panel";
 
 export function ChartsPanel() {
-  return <StateTradeTotalByStateChart />;
+  return <DashboardChartsPanel />;
 }

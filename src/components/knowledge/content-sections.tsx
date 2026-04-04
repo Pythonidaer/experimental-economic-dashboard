@@ -23,8 +23,8 @@ export function ContentSections({ sections }: Props) {
           <div
             className={
               section.heading
-                ? "mt-3 space-y-4 text-pretty text-sm leading-relaxed text-muted-foreground sm:text-base"
-                : "space-y-4 text-pretty text-sm leading-relaxed text-muted-foreground sm:text-base"
+                ? "mt-3 space-y-4 break-words text-pretty text-sm leading-relaxed text-muted-foreground sm:text-base"
+                : "space-y-4 break-words text-pretty text-sm leading-relaxed text-muted-foreground sm:text-base"
             }
           >
             {section.paragraphs.map((p, pi) => (

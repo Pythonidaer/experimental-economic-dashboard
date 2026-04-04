@@ -1,52 +1,51 @@
 # Implementation Plan
 
-## Phase 1: Project Setup
-- Initialize Next.js app with TypeScript
-- Install shadcn/ui
-- Install MapLibre, TanStack Table, Nivo, TanStack Query, Supabase client
-- Set up base layout and navigation
-- Add docs folder and project documentation
-- Create base folder structure
+**Note:** There is no separate `implementation.md`; this file is the implementation reference for the project.
 
-## Phase 2: Dashboard Shell
-- Create dashboard route
-- Add accessible tabs:
-  - Overview
-  - Map
-  - Table
-  - Charts
-  - Notes
-- Create placeholder content for each tab
-- Add basic responsive layout
+## Phase 1: Knowledge Layer Completion
+- Glossary content aligned with `economists-hour-master-checklist.md`; quality, taxonomy, and `relatedTopicSlugs` passes done—treat as **stabilized / production-ready** for the knowledge layer
+- People, institutions, laws, and events remain modeled as glossary entries (no extra routes)
+- Glossary and topics indexes include alphabetical navigation and consistent layout with detail pages
 
-## Phase 3: Supabase Integration
-- Create Supabase project
-- Add environment variables
-- Create first dataset table
-- Seed sample data
-- Build first query hook
-- Add loading/error/empty UI states
+## Phase 2: Dashboard Data Integration
+- Confirm current Supabase schema matches the app’s query needs
+- Fully integrate `state_trade_metrics` into the frontend if any placeholder paths still remain
+- Replace placeholder or mock dashboard data with real query-backed data
+- Ensure loading, error, and empty states are handled
 
-## Phase 4: Map View
-- Add MapLibre map
-- Add state boundaries GeoJSON
-- Display state-level data
+## Phase 3: Map View Hardening
+- Ensure state boundaries and state-level data render reliably
 - Support selecting a state
-- Show a details panel for the selected state
+- Keep selected state visually and programmatically clear
+- Ensure the same information is accessible outside the map
 
-## Phase 5: Table View
-- Add TanStack Table
-- Make columns sortable
-- Add filtering
-- Sync selected state with details panel if useful
+## Phase 4: Table View Hardening
+- Ensure table is using real data
+- Keep sorting and filtering clean and understandable
+- Make sure table interactions do not fight map state
+- Verify responsive behavior
 
-## Phase 6: Chart View
-- Add Nivo chart using same dataset
-- Show top-level comparisons
-- Keep charts simple and readable
+## Phase 5: Chart View Hardening
+- Ensure charts use the same real dataset as map/table
+- Keep comparisons readable and minimal
+- Avoid chart complexity that does not improve understanding
 
-## Phase 7: Polish
+## Phase 6: Secondary Dataset Integration
+- Prepare query layer for `state_labor_metrics`
+- Define one narrow first use case for labor data
+- Integrate labor data only where it clearly improves the dashboard
+- Do not over-expand the UI during first labor integration
+
+## Phase 7: Polish and Production Readiness
 - Improve accessibility labels and keyboard behavior
-- Improve empty/loading/error states
-- Refactor large files
-- Add README screenshots and explanation
+- Resolve remaining TypeScript and lint issues
+- Refactor large files where necessary
+- Review empty/loading/error states across the app
+- Update README and docs to reflect the actual implementation
+
+---
+
+## Notes
+- The glossary is the immediate completion priority
+- Dashboard and data visualization remain the long-term core focus
+- Do not expand scope beyond current architecture unless documentation is updated first

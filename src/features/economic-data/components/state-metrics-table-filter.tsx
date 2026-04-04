@@ -1,23 +1,27 @@
 "use client";
 
-type StateTradeMetricsTableFilterProps = {
+type StateMetricsTableFilterProps = {
   id?: string;
   value: string;
   onChange: (value: string) => void;
+  label?: string;
+  hint?: string;
 };
 
-export function StateTradeMetricsTableFilter({
-  id = "state-trade-metrics-filter",
+export function StateMetricsTableFilter({
+  id = "state-metrics-table-filter",
   value,
   onChange,
-}: StateTradeMetricsTableFilterProps) {
+  label = "Filter by state name or code",
+  hint = "Narrows the rows below on this page.",
+}: StateMetricsTableFilterProps) {
   return (
     <div className="mb-4 min-w-0">
       <label
         className="mb-1.5 block text-sm font-medium text-foreground"
         htmlFor={id}
       >
-        Filter by state name or code
+        {label}
       </label>
       <input
         aria-describedby={`${id}-hint`}
@@ -31,7 +35,7 @@ export function StateTradeMetricsTableFilter({
         value={value}
       />
       <p className="mt-1.5 text-xs text-muted-foreground" id={`${id}-hint`}>
-        Client-side filter; all rows are already loaded from Supabase.
+        {hint}
       </p>
     </div>
   );

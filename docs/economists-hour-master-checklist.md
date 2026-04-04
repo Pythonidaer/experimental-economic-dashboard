@@ -6,12 +6,10 @@ This document converts index material from *The Economist’s Hour* into a struc
 
 - glossary entries
 - topic/article pages
-- people
-- institutions
-- events
-- future datasets
+- coverage tracking
+- dataset relationships
 
-This is the **source of truth for coverage**, not the MVP.
+This is the **source of truth for coverage**.
 
 ---
 
@@ -32,7 +30,7 @@ This is the **source of truth for coverage**, not the MVP.
 - [x] Productivity
 - [x] Wages
 - [x] Labor force participation
-- [x] Labor unions (content plan P1)
+- [x] Labor unions
 - [x] Stagflation
 
 ## Trade & global systems
@@ -52,7 +50,7 @@ This is the **source of truth for coverage**, not the MVP.
 ## Market structure
 - [x] Antitrust
 - [x] Market concentration
-- [x] Corporate concentration (content plan P2)
+- [x] Corporate concentration
 - [x] Monopoly
 - [x] Competition
 
@@ -73,27 +71,27 @@ This is the **source of truth for coverage**, not the MVP.
 
 - [x] Financial crisis
 - [x] Deflation
-- [x] Deficit spending (content plan P2)
-- [x] Gold standard (content plan P2)
-- [x] Banking regulation (content plan P2)
+- [x] Deficit spending
+- [x] Gold standard
+- [x] Banking regulation
 
 ---
 
-# 🧍‍♂️ PEOPLE (P1 → P3)
+# 🧍‍♂️ PEOPLE (represented as glossary entries)
 
 ## Core economists (P1)
 - [x] Milton Friedman
-- [ ] John Maynard Keynes
-- [ ] Friedrich Hayek
-- [ ] Paul Samuelson
-- [ ] Joseph Stiglitz
-- [ ] Robert Solow
+- [x] John Maynard Keynes
+- [x] Friedrich Hayek
+- [x] Paul Samuelson
+- [x] Joseph Stiglitz
+- [x] Robert Solow
 
 ## Policy influencers (P2)
-- [ ] Paul Volcker
-- [ ] Alan Greenspan
-- [ ] Janet Yellen
-- [ ] Lawrence Summers
+- [x] Paul Volcker
+- [x] Alan Greenspan
+- [x] Janet Yellen
+- [x] Lawrence Summers
 
 ## Political figures (P3)
 - [ ] Ronald Reagan
@@ -103,41 +101,41 @@ This is the **source of truth for coverage**, not the MVP.
 
 ---
 
-# 🏛️ INSTITUTIONS (P1 → P2)
+# 🏛️ INSTITUTIONS (represented as glossary entries)
 
 ## Core institutions (P1)
-- [ ] Federal Reserve
-- [ ] IMF (International Monetary Fund)
-- [ ] World Bank
-- [ ] FTC (Federal Trade Commission)
+- [x] Federal Reserve
+- [x] IMF (International Monetary Fund)
+- [x] World Bank
+- [x] FTC (Federal Trade Commission)
 
 ## Regulatory bodies (P2)
-- [ ] SEC
-- [ ] OSHA
-- [ ] EPA
-- [ ] OECD
-- [ ] CFTC
+- [x] SEC
+- [x] OSHA
+- [x] EPA
+- [x] OECD
+- [x] CFTC
 
 ---
 
-# 📜 POLICIES / LAWS
+# 📜 POLICIES / LAWS (represented as glossary entries)
 
-- [ ] Clean Air Act
-- [ ] Sherman Antitrust Act
-- [ ] Humphrey-Hawkins Act
-- [ ] Airline Deregulation Act
-- [ ] Financial regulation (general)
+- [x] Clean Air Act
+- [x] Sherman Antitrust Act
+- [x] Humphrey-Hawkins Act
+- [x] Airline Deregulation Act
+- [x] Financial regulation (general)
 
 ---
 
-# 🌍 EVENTS / SYSTEMS
+# 🌍 EVENTS / SYSTEMS (represented as glossary entries)
 
-- [ ] Bretton Woods system
-- [ ] Great Depression
-- [ ] Great Recession
-- [ ] Great Moderation
-- [ ] Oil crises (OPEC)
-- [ ] Cold War economic effects
+- [x] Bretton Woods system
+- [x] Great Depression
+- [x] Great Recession
+- [x] Great Moderation
+- [x] Oil crises (OPEC)
+- [x] Cold War economic effects
 
 ---
 
@@ -154,15 +152,15 @@ This is the **source of truth for coverage**, not the MVP.
 
 - [x] What the Federal Reserve Actually Does
 - [x] Inflation and Price Stability
-- [x] Trade and State Economies (page title: “How Trade Shapes State Economies”)
+- [x] Trade and State Economies
 - [x] Financial Crises Explained
 - [x] Deregulation and Its Consequences
 - [x] Energy Shocks and Stagflation
 - [x] The Role of Economists in Policy
-- [x] From Bretton Woods to Modern Currency Systems (content plan P1)
-- [x] Government Regulation and Cost-Benefit Analysis (content plan P2)
-- [x] Banking Regulation and Financial Risk (content plan P2)
-- [x] The Politics of Antitrust (content plan P2)
+- [x] From Bretton Woods to Modern Currency Systems
+- [x] Government Regulation and Cost-Benefit Analysis
+- [x] Banking Regulation and Financial Risk
+- [x] The Politics of Antitrust
 
 ---
 
@@ -171,7 +169,7 @@ This is the **source of truth for coverage**, not the MVP.
 ## Current
 - [x] state_trade_metrics
 
-## Next (build now)
+## Next (build after glossary completion)
 - [ ] state_labor_metrics
 
 ## Future
@@ -199,27 +197,24 @@ This is the **source of truth for coverage**, not the MVP.
 
 ---
 
-# 🚧 MVP CONTENT STATUS
-
-## Glossary
-- **~35** entries (P1 checklist core + theories + selected P2, including content-plan P1 labor unions)
-- Further expansion: price controls, credit derivatives, asset bubble, competitive markets as distinct entry, consumer safety, environmental regulation
-
-## Topics
-- **15** topic pages (prior 11 + Bretton Woods, regulation/CBA, banking risk, politics of antitrust)
-- Optional: “Inflation and Why Prices Rise” as alternate title already covered by Inflation and Price Stability; Ricardo/Solow people routes still out of scope
-
-## People / Institutions / Events
-- Not implemented yet
-- Should be structured next but not overbuilt
-
----
-
 # 🎯 NEXT TARGET
 
 ## Phase Goal
-Add **people**, **institutions**, and **events** routes and file-based content (per content plan)—without changing glossary/topic architecture.
+- **Glossary:** P1 and intended P2 coverage implemented and stabilized in `glossary.ts` (ongoing long-tail optional; P3 political figures still out of scope unless added deliberately)
+- **Dashboard:** Integrate `state_labor_metrics` when ready; connect live data to concepts already defined in the glossary
 
-## Stretch
-- Remaining P2 glossary and topic pages from `economists-hour-content-plan.md`
-- Inline “dataset connection” callouts on topics when `state_labor_metrics` ships
+## After Glossary Completion
+- Integrate state_labor_metrics into dashboard
+- Begin connecting glossary concepts to live data (see `docs/implementation-plan.md` Phase 2+)
+
+## Notes
+- People, institutions, and events are implemented as glossary entries
+- No separate route systems are required for them
+
+---
+
+# Supplementary glossary (select P2 people & concepts)
+
+Implemented in `src/content/glossary.ts` beyond the rows above (non-exhaustive): e.g. Robert Bork; Arthur Burns, Laffer; David Ricardo, Mundell; Stigler, Posner; Reich, Rodrik; Reinhart & Rogoff; OECD; CFTC; tariffs; subsidies; employment; systemic risk; credit derivatives; and other P2 anchors from `economists-hour-content-plan.md`.
+
+Remaining long-tail (examples): P3 political figures; ECB, BIS, CFPB, NBER, CEA, AEA institutions from the content plan; additional events (Savings and Loan crisis, European integration, etc.).
