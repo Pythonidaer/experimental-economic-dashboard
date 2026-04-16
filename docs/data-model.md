@@ -61,6 +61,29 @@
 
 **Value units:** Application code treats numeric export columns as **millions of U.S. dollars** (consistent with common Census state export table presentations). Adjust formatting if your load uses full dollars.
 
+### `state_industries`
+
+**Purpose:** Early-stage Massachusetts ES-202 / QCEW industry employment/wage layer prepared from cleaned exports. This is a **limited pilot dataset**, not full statewide labor-market coverage.
+
+**Fields:**
+
+- `id` (uuid, primary key)
+- `region` (text, indexed)
+- `year` (int8/int4, indexed)
+- `ownership_type` (text)
+- `selected_industry` (text)
+- `naics_code` (text, indexed)
+- `industry` (text)
+- `industry_slug` (text, indexed)
+- `establishments` (int4)
+- `avg_monthly_employment` (numeric)
+- `avg_weekly_wage` (numeric)
+- `total_wages` (numeric)
+- `source_file` (text)
+- `created_at` (timestamptz)
+
+**Source note:** Data is derived from cleaned Massachusetts ES-202 / QCEW export CSVs (current cleaned file: `data/output/ma-industry-employment-wage-2024-top-level.csv`). Initial coverage is currently Boston-Cambridge-Newton region, 2024 annual, top-level selected industry rows only.
+
 ---
 
 ## Current Schema Strategy
@@ -78,6 +101,7 @@
 - **`state_export_profiles`:** **Primary “Exports” path** — map, table, charts, Notes (Census bucket metrics, methodology in UI copy).
 - **`state_labor_metrics`:** **Primary “Labor” path** — unemployment (and other columns when populated); charts, accessible tables, shared exploration controls where implemented. Uses `src/features/economic-data/` hooks and queries.
 - **`state_trade_metrics`:** Schema/queries may exist; **not** wired to the main **Exports vs Labor** dataset toggle. Treat as auxiliary unless product direction changes.
+- **`state_industries`:** Database table now exists for early-stage Massachusetts industry employment/wage data; **not** yet integrated into dashboard query/hooks/UI paths.
 
 ---
 

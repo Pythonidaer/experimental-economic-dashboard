@@ -140,6 +140,57 @@ export type Database = {
         };
         Relationships: [];
       };
+      state_industries: {
+        Row: {
+          id: string;
+          region: string;
+          year: number;
+          ownership_type: string | null;
+          selected_industry: string | null;
+          naics_code: string;
+          industry: string;
+          industry_slug: string | null;
+          establishments: number | null;
+          avg_monthly_employment: number | null;
+          avg_weekly_wage: number | null;
+          total_wages: number | null;
+          source_file: string | null;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          region: string;
+          year: number;
+          ownership_type?: string | null;
+          selected_industry?: string | null;
+          naics_code: string;
+          industry: string;
+          industry_slug?: string | null;
+          establishments?: number | null;
+          avg_monthly_employment?: number | null;
+          avg_weekly_wage?: number | null;
+          total_wages?: number | null;
+          source_file?: string | null;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          region?: string;
+          year?: number;
+          ownership_type?: string | null;
+          selected_industry?: string | null;
+          naics_code?: string;
+          industry?: string;
+          industry_slug?: string | null;
+          establishments?: number | null;
+          avg_monthly_employment?: number | null;
+          avg_weekly_wage?: number | null;
+          total_wages?: number | null;
+          source_file?: string | null;
+          created_at?: string;
+        };
+        Relationships: [];
+      };
     };
     Views: Record<string, never>;
     Functions: Record<string, never>;
@@ -156,3 +207,6 @@ export type StateLaborMetricRow =
 
 export type StateExportProfileRow =
   Database["public"]["Tables"]["state_export_profiles"]["Row"];
+
+export type StateIndustryRow =
+  Database["public"]["Tables"]["state_industries"]["Row"];

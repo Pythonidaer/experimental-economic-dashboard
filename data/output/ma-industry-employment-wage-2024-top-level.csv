@@ -1,0 +1,11 @@
+region,year,ownership_type,selected_industry,naics_code,industry,industry_slug,establishments,avg_monthly_employment,avg_weekly_wage,total_wages,source_file
+Boston-Cambridge-Newton,2024,All Ownership Types,Retail Trade (44 & 45),44-45,Retail Trade,retail_trade,12671,202666,925,9750237073,WageReport (1).csv
+Boston-Cambridge-Newton,2024,All Ownership Types,Health Care and Social Assistance,62,Health Care and Social Assistance,health_care_and_social_assistance,39842,445771,1502,34814544062,WageReport (2).csv
+Boston-Cambridge-Newton,2024,All Ownership Types,Finance and Insurance,52,Finance and Insurance,finance_and_insurance,7268,126167,4273,28033511322,WageReport (3).csv
+Boston-Cambridge-Newton,2024,All Ownership Types,Professional and Technical Services,54,Professional and Technical Services,professional_and_technical_services,24080,311039,3687,59630402169,WageReport (4).csv
+Boston-Cambridge-Newton,2024,All Ownership Types,Information,51,Information,information,5054,78650,3767,15406649332,WageReport (5).csv
+Worcester,2024,All Ownership Types,Professional and Technical Services,54,Professional and Technical Services,professional_and_technical_services,2471,19027,2237,2213671082,WageReport (1).csv
+Worcester,2024,All Ownership Types,Information,51,Information,information,458,3750,2084,406471044,WageReport (2).csv
+Worcester,2024,All Ownership Types,Finance and Insurance,52,Finance and Insurance,finance_and_insurance,889,11631,2277,1377125963,WageReport (3).csv
+Worcester,2024,All Ownership Types,Retail Trade (44 & 45),44-45,Retail Trade,retail_trade,2310,37055,801,1543951367,WageReport (4).csv
+Worcester,2024,All Ownership Types,Health Care and Social Assistance,62,Health Care and Social Assistance,health_care_and_social_assistance,9449,74676,1321,5130482072,WageReport (5).csv

@@ -42,6 +42,12 @@
 - **Banking** (institutions, branches, or reference attributes) is a **valid future data domain** for learning and optional **bank map** surfaces—no committed schema until a source and UI scope exist  
 - **Job scraper** or automated job-posting ingestion is **exploratory / later** only—**not** a current implementation commitment; research may precede any build  
 
+### Industry employment/wage pilot table (current, limited)
+- Added **`state_industries`** as a flat Supabase table for an early-stage Massachusetts ES-202 / QCEW cleaned dataset
+- Current pilot coverage is intentionally narrow (Boston-Cambridge-Newton region, 2024 annual, one top-level selected-industry row per source export)
+- Treat as a schema/readiness step for iterative integration, **not** a complete statewide labor-market model
+- Manual import of cleaned CSV is acceptable for this phase; validate row count and key fields after import
+
 ---
 
 ### Product Direction
