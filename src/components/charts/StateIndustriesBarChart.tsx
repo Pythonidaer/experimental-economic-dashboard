@@ -10,7 +10,8 @@ import type { StateIndustryRow } from "@/features/economic-data/types/database";
 
 type StateIndustriesBarDatum = {
   industry: string;
-} & Record<string, number>;
+  [region: string]: string | number;
+};
 
 function formatNumber(value: number): string {
   return new Intl.NumberFormat("en-US").format(value);
@@ -135,6 +136,7 @@ export function StateIndustriesBarChart() {
           )}
           legends={[
             {
+              dataFrom: "keys",
               anchor: "top-right",
               direction: "column",
               justify: false,
