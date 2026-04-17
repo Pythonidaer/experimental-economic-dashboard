@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 import { Tabs, TabsContent } from "@/components/ui/tabs";
@@ -11,6 +11,7 @@ import { ChartsPanel } from "./panels/charts-panel";
 import {
   DEFAULT_DASHBOARD_TAB,
   parseDashboardTabParam,
+  type DashboardTabValue,
 } from "./dashboard-tabs.constants";
 import { MapPanel } from "./panels/map-panel";
 import { NotesPanel } from "./panels/notes-panel";
@@ -21,12 +22,23 @@ export function DashboardTabsShellInner() {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  const activeTab = parseDashboardTabParam(searchParams.get(DASHBOARD_TAB_SEARCH_PARAM));
+  const queryKey = searchParams.toString();
+  const tabFromUrl = useMemo(() => {
+    const params = new URLSearchParams(queryKey);
+    return parseDashboardTabParam(params.get(DASHBOARD_TAB_SEARCH_PARAM));
+  }, [queryKey]);
+
+  const [tab, setTab] = useState<DashboardTabValue>(tabFromUrl);
+
+  useEffect(() => {
+    setTab(tabFromUrl);
+  }, [tabFromUrl]);
 
   const onTabChange = useCallback(
     (value: string | number | null) => {
       if (value == null) return;
       const next = parseDashboardTabParam(String(value));
+      setTab(next);
       const params = new URLSearchParams(searchParams.toString());
       if (next === DEFAULT_DASHBOARD_TAB) {
         params.delete(DASHBOARD_TAB_SEARCH_PARAM);
@@ -43,7 +55,7 @@ export function DashboardTabsShellInner() {
     <Tabs
       className="flex flex-1 flex-col gap-3 sm:gap-4"
       onValueChange={onTabChange}
-      value={activeTab}
+      value={tab}
     >
       <DashboardTabList />
       <TabsContent className="flex-1 outline-none" value="overview">
