@@ -7,15 +7,15 @@ import { Tabs, TabsContent } from "@/components/ui/tabs";
 import { DashboardTabList } from "./dashboard-tab-list";
 import { DashboardTabsShellInner } from "./dashboard-tabs-shell-inner";
 import { ChartsPanel } from "./panels/charts-panel";
-import { DEFAULT_DASHBOARD_TAB } from "./dashboard-tabs.constants";
+import { type DashboardTabValue } from "./dashboard-tabs.constants";
 import { MapPanel } from "./panels/map-panel";
 import { NotesPanel } from "./panels/notes-panel";
 import { OverviewPanel } from "./panels/overview-panel";
 import { TablePanel } from "./panels/table-panel";
 
-function DashboardTabsFallback() {
+function DashboardTabsFallback({ initialTab }: { initialTab: DashboardTabValue }) {
   return (
-    <Tabs className="flex flex-1 flex-col gap-3 sm:gap-4" defaultValue={DEFAULT_DASHBOARD_TAB}>
+    <Tabs className="flex flex-1 flex-col gap-3 sm:gap-4" defaultValue={initialTab}>
       <DashboardTabList />
       <TabsContent className="flex-1 outline-none" value="overview">
         <OverviewPanel />
@@ -36,10 +36,14 @@ function DashboardTabsFallback() {
   );
 }
 
-export function DashboardTabsShell() {
+type DashboardTabsShellProps = {
+  initialTab: DashboardTabValue;
+};
+
+export function DashboardTabsShell({ initialTab }: DashboardTabsShellProps) {
   return (
-    <Suspense fallback={<DashboardTabsFallback />}>
-      <DashboardTabsShellInner />
+    <Suspense fallback={<DashboardTabsFallback initialTab={initialTab} />}>
+      <DashboardTabsShellInner initialTab={initialTab} />
     </Suspense>
   );
 }

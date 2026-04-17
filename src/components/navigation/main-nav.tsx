@@ -1,8 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 
+import { DASHBOARD_NAV_RESET_EVENT } from "@/components/layout/dashboard/dashboard-tabs.constants";
 import { ROUTES } from "@/lib/constants/routes";
 import { cn } from "@/lib/utils";
 
@@ -15,6 +16,7 @@ const links = [
 
 export function MainNav() {
   const pathname = usePathname();
+  const router = useRouter();
 
   return (
     <nav aria-label="Primary" className="w-full sm:w-auto">
@@ -22,6 +24,7 @@ export function MainNav() {
         {links.map(({ href, label }) => {
           const isCurrent =
             href === ROUTES.home ? pathname === href : pathname.startsWith(href);
+          const isDashboard = href === ROUTES.dashboard;
 
           return (
             <li key={href} className="min-w-0 sm:w-auto">
@@ -34,6 +37,16 @@ export function MainNav() {
                 )}
                 href={href}
                 aria-current={isCurrent ? "page" : undefined}
+                onClick={
+                  isDashboard
+                    ? (e) => {
+                        if (!pathname.startsWith(ROUTES.dashboard)) return;
+                        e.preventDefault();
+                        window.dispatchEvent(new Event(DASHBOARD_NAV_RESET_EVENT));
+                        router.replace(ROUTES.dashboard, { scroll: false });
+                      }
+                    : undefined
+                }
               >
                 {label}
               </Link>

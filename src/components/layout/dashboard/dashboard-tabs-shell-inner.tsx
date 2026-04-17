@@ -1,7 +1,7 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useCallback, useEffect, useState } from "react";
+import { usePathname, useRouter } from "next/navigation";
 
 import { Tabs, TabsContent } from "@/components/ui/tabs";
 import { DASHBOARD_TAB_SEARCH_PARAM } from "@/lib/knowledge/dashboard-url";
@@ -9,6 +9,7 @@ import { DASHBOARD_TAB_SEARCH_PARAM } from "@/lib/knowledge/dashboard-url";
 import { DashboardTabList } from "./dashboard-tab-list";
 import { ChartsPanel } from "./panels/charts-panel";
 import {
+  DASHBOARD_NAV_RESET_EVENT,
   DEFAULT_DASHBOARD_TAB,
   parseDashboardTabParam,
   type DashboardTabValue,
@@ -18,28 +19,40 @@ import { NotesPanel } from "./panels/notes-panel";
 import { OverviewPanel } from "./panels/overview-panel";
 import { TablePanel } from "./panels/table-panel";
 
-export function DashboardTabsShellInner() {
+type DashboardTabsShellInnerProps = {
+  initialTab: DashboardTabValue;
+};
+
+export function DashboardTabsShellInner({ initialTab }: DashboardTabsShellInnerProps) {
   const router = useRouter();
   const pathname = usePathname();
-  const searchParams = useSearchParams();
-  const queryKey = searchParams.toString();
-  const tabFromUrl = useMemo(() => {
-    const params = new URLSearchParams(queryKey);
-    return parseDashboardTabParam(params.get(DASHBOARD_TAB_SEARCH_PARAM));
-  }, [queryKey]);
-
-  const [tab, setTab] = useState<DashboardTabValue>(tabFromUrl);
+  const [tab, setTab] = useState<DashboardTabValue>(initialTab);
 
   useEffect(() => {
-    setTab(tabFromUrl);
-  }, [tabFromUrl]);
+    setTab(initialTab);
+  }, [initialTab]);
+
+  useEffect(() => {
+    const syncFromBrowserUrl = () => {
+      const params = new URLSearchParams(window.location.search);
+      setTab(parseDashboardTabParam(params.get(DASHBOARD_TAB_SEARCH_PARAM)));
+    };
+    window.addEventListener("popstate", syncFromBrowserUrl);
+    return () => window.removeEventListener("popstate", syncFromBrowserUrl);
+  }, []);
+
+  useEffect(() => {
+    const onPrimaryNavDashboard = () => setTab(DEFAULT_DASHBOARD_TAB);
+    window.addEventListener(DASHBOARD_NAV_RESET_EVENT, onPrimaryNavDashboard);
+    return () => window.removeEventListener(DASHBOARD_NAV_RESET_EVENT, onPrimaryNavDashboard);
+  }, []);
 
   const onTabChange = useCallback(
     (value: string | number | null) => {
       if (value == null) return;
       const next = parseDashboardTabParam(String(value));
       setTab(next);
-      const params = new URLSearchParams(searchParams.toString());
+      const params = new URLSearchParams(window.location.search);
       if (next === DEFAULT_DASHBOARD_TAB) {
         params.delete(DASHBOARD_TAB_SEARCH_PARAM);
       } else {
@@ -48,7 +61,7 @@ export function DashboardTabsShellInner() {
       const query = params.toString();
       router.replace(query ? `${pathname}?${query}` : pathname, { scroll: false });
     },
-    [pathname, router, searchParams],
+    [pathname, router],
   );
 
   return (
