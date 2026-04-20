@@ -1,0 +1,138 @@
+region,year,naics_code,naics_level,industry,establishments,avg_monthly_employment,avg_weekly_wage
+Boston-Cambridge-Newton,2024,44-45,44-45,Retail Trade,12671,202666,925
+Boston-Cambridge-Newton,2024,441,441,Motor vehicle and parts dealers,1073,20725,1607
+Boston-Cambridge-Newton,2024,4411,4411,Automobile dealers,491,14890,1846
+Boston-Cambridge-Newton,2024,4412,4412,Other motor vehicle dealers,95,900,1259
+Boston-Cambridge-Newton,2024,4413,4413,"Auto parts, accessories, and tire stores",487,4935,948
+Boston-Cambridge-Newton,2024,444,444,Building material and garden supply stores,756,14837,975
+Boston-Cambridge-Newton,2024,4441,4441,Building material and supplies dealers,613,13107,976
+Boston-Cambridge-Newton,2024,4442,4442,Lawn and garden equipment and supplies stores,143,1731,965
+Boston-Cambridge-Newton,2024,445,445,Food and beverage stores,3043,62013,671
+Boston-Cambridge-Newton,2024,4451,4451,Grocery stores,1771,53122,651
+Boston-Cambridge-Newton,2024,4452,4452,Specialty food stores,419,4527,868
+Boston-Cambridge-Newton,2024,4453,4453,"Beer, wine, and liquor stores",854,4364,721
+Boston-Cambridge-Newton,2024,62,62,Health Care and Social Assistance,39842,445771,1502
+Boston-Cambridge-Newton,2024,621,621,Ambulatory health care services,7449,130166,1721
+Boston-Cambridge-Newton,2024,6211,6211,Offices of physicians,1883,41532,2709
+Boston-Cambridge-Newton,2024,6212,6212,Offices of dentists,2084,17482,1474
+Boston-Cambridge-Newton,2024,6213,6213,Offices of other health practitioners,2058,16663,1142
+Boston-Cambridge-Newton,2024,6214,6214,Outpatient care centers,441,14090,1477
+Boston-Cambridge-Newton,2024,6215,6215,Medical and diagnostic laboratories,263,4352,1809
+Boston-Cambridge-Newton,2024,6216,6216,Home health care services,557,29787,971
+Boston-Cambridge-Newton,2024,6219,6219,Other ambulatory health care services,163,6261,1457
+Boston-Cambridge-Newton,2024,622,622,Hospitals,169,161948,1876
+Boston-Cambridge-Newton,2024,6221,6221,General medical and surgical hospitals,111,134063,1916
+Boston-Cambridge-Newton,2024,6222,6222,Psychiatric and substance abuse hospitals,25,5631,1500
+Boston-Cambridge-Newton,2024,6223,6223,Other hospitals,33,22254,1725
+Boston-Cambridge-Newton,2024,623,623,Nursing and residential care facilities,1559,60508,1064
+Boston-Cambridge-Newton,2024,6231,6231,"Nursing care facilities, skilled nursing",233,22469,1158
+Boston-Cambridge-Newton,2024,6232,6232,Residential mental health facilities,976,18593,1131
+Boston-Cambridge-Newton,2024,6233,6233,"Continuing care, assisted living facilities",235,16986,871
+Boston-Cambridge-Newton,2024,6239,6239,Other residential care facilities,115,2461,1041
+Boston-Cambridge-Newton,2024,624,624,Social assistance,30666,93148,830
+Boston-Cambridge-Newton,2024,6241,6241,Individual and family services,28851,59546,785
+Boston-Cambridge-Newton,2024,6242,6242,Emergency and other relief services,274,5298,1244
+Boston-Cambridge-Newton,2024,6243,6243,Vocational rehabilitation services,137,5365,1034
+Boston-Cambridge-Newton,2024,6244,6244,Child day care services,1404,22939,803
+Boston-Cambridge-Newton,2024,52,52,Finance and Insurance,7268,126167,4273
+Boston-Cambridge-Newton,2024,522,522,Credit intermediation and related activities,2246,35287,3023
+Boston-Cambridge-Newton,2024,5221,5221,Depository credit intermediation,1621,29020,2884
+Boston-Cambridge-Newton,2024,5222,5222,Nondepository credit intermediation,366,3497,4003
+Boston-Cambridge-Newton,2024,5223,5223,Activities related to credit intermediation,259,2770,3247
+Boston-Cambridge-Newton,2024,523,523,"Securities, commodity contracts, investments",2904,44798,6644
+Boston-Cambridge-Newton,2024,5231,5231,Securities and commodity contracts brokerage,759,13219,6579
+Boston-Cambridge-Newton,2024,5232,5232,Securities and commodity exchanges,23,80,4025
+Boston-Cambridge-Newton,2024,5239,5239,Other financial investment activities,2123,31499,6678
+Boston-Cambridge-Newton,2024,524,524,Insurance carriers and related activities,1963,44667,2906
+Boston-Cambridge-Newton,2024,5241,5241,Insurance carriers,352,29696,3009
+Boston-Cambridge-Newton,2024,5242,5242,Insurance agencies and brokerages,1611,14970,2703
+Boston-Cambridge-Newton,2024,525,525,"Funds, trusts, and other financial vehicles",147,357,3848
+Boston-Cambridge-Newton,2024,5251,5251,Insurance and employee benefit funds,24,164,2015
+Boston-Cambridge-Newton,2024,5259,5259,Other investment pools and funds,123,193,5408
+Boston-Cambridge-Newton,2024,541,541,Professional and technical services,24080,311039,3687
+Boston-Cambridge-Newton,2024,5411,5411,Legal services,3011,23898,3405
+Boston-Cambridge-Newton,2024,5412,5412,Accounting and bookkeeping services,1954,19972,2482
+Boston-Cambridge-Newton,2024,5413,5413,Architectural and engineering services,2311,35490,2702
+Boston-Cambridge-Newton,2024,5414,5414,Specialized design services,728,2568,1896
+Boston-Cambridge-Newton,2024,5415,5415,Computer systems design and related services,5505,60084,4133
+Boston-Cambridge-Newton,2024,5416,5416,Management and technical consulting services,4909,49607,3325
+Boston-Cambridge-Newton,2024,5417,5417,Scientific research and development services,2866,99225,4634
+Boston-Cambridge-Newton,2024,5418,5418,"Advertising, PR, and related services",1121,8081,2338
+Boston-Cambridge-Newton,2024,5419,5419,Other professional and technical services,1676,12114,1907
+Boston-Cambridge-Newton,2024,51,51,Information,5054,78650,3767
+Boston-Cambridge-Newton,2024,512,512,Motion picture and sound recording industries,425,3723,1112
+Boston-Cambridge-Newton,2024,5121,5121,Motion picture and video industries,373,3603,1107
+Boston-Cambridge-Newton,2024,5122,5122,Sound recording industries,52,120,1252
+Boston-Cambridge-Newton,2024,5132,5132,Software Publishers,1957,36921,4475
+Boston-Cambridge-Newton,2024,516,516,Internet Publishing and Broadcasting,261,5147,4100
+Boston-Cambridge-Newton,2024,5161,5161,Internet Publishing and Broadcasting,78,2383,2154
+Boston-Cambridge-Newton,2024,517,517,Telecommunications,621,8268,2535
+Boston-Cambridge-Newton,2024,5171,5171,Wired Telecommunications Carriers,513,7290,2340
+Boston-Cambridge-Newton,2024,5182,5182,"Data processing, hosting and related services",737,7705,4060
+Boston-Cambridge-Newton,2024,519,519,Other information services,610,9299,3760
+Worcester,2024,541,541,Professional and technical services,2471,19027,2237
+Worcester,2024,5411,5411,Legal services,339,1462,1889
+Worcester,2024,5412,5412,Accounting and bookkeeping services,293,1644,2075
+Worcester,2024,5413,5413,Architectural and engineering services,291,2484,1963
+Worcester,2024,5414,5414,Specialized design services,67,239,1293
+Worcester,2024,5415,5415,Computer systems design and related services,574,3654,2780
+Worcester,2024,5416,5416,Management and technical consulting services,470,2276,2160
+Worcester,2024,5417,5417,Scientific research and development services,143,5105,2500
+Worcester,2024,5418,5418,"Advertising, PR, and related services",77,345,1872
+Worcester,2024,5419,5419,Other professional and technical services,217,1818,1501
+Worcester,2024,51,51,Information,458,3750,2084
+Worcester,2024,512,512,Motion picture and sound recording industries,39,373,869
+Worcester,2024,5121,5121,Motion picture and video industries,35,371,860
+Worcester,2024,5132,5132,Software Publishers,108,505,4327
+Worcester,2024,516,516,Internet Publishing and Broadcasting,33,169,931
+Worcester,2024,5161,5161,Internet Publishing and Broadcasting,10,97,918
+Worcester,2024,517,517,Telecommunications,91,1145,1745
+Worcester,2024,5171,5171,Wired Telecommunications Carriers,78,1082,1743
+Worcester,2024,5182,5182,"Data processing, hosting and related services",55,369,4686
+Worcester,2024,519,519,Other information services,92,829,975
+Worcester,2024,52,52,Finance and Insurance,889,11631,2277
+Worcester,2024,522,522,Credit intermediation and related activities,383,3625,1778
+Worcester,2024,5221,5221,Depository credit intermediation,296,3245,1667
+Worcester,2024,5222,5222,Nondepository credit intermediation,49,232,2296
+Worcester,2024,5223,5223,Activities related to credit intermediation,38,148,3416
+Worcester,2024,523,523,"Securities, commodity contracts, investments",204,808,3754
+Worcester,2024,5231,5231,Securities and commodity contracts brokerage,71,397,4650
+Worcester,2024,5239,5239,Other financial investment activities,134,411,2888
+Worcester,2024,524,524,Insurance carriers and related activities,297,7188,2363
+Worcester,2024,5241,5241,Insurance carriers,37,4827,2366
+Worcester,2024,5242,5242,Insurance agencies and brokerages,260,2362,2357
+Worcester,2024,44-45,44-45,Retail Trade,2310,37055,801
+Worcester,2024,441,441,Motor vehicle and parts dealers,307,5191,1421
+Worcester,2024,4411,4411,Automobile dealers,143,3333,1627
+Worcester,2024,4412,4412,Other motor vehicle dealers,27,312,1233
+Worcester,2024,4413,4413,"Auto parts, accessories, and tire stores",137,1547,1017
+Worcester,2024,444,444,Building material and garden supply stores,187,3240,961
+Worcester,2024,4441,4441,Building material and supplies dealers,140,2759,978
+Worcester,2024,4442,4442,Lawn and garden equipment and supplies stores,48,480,866
+Worcester,2024,445,445,Food and beverage stores,513,10093,592
+Worcester,2024,4451,4451,Grocery stores,264,8724,576
+Worcester,2024,4452,4452,Specialty food stores,57,424,735
+Worcester,2024,4453,4453,"Beer, wine, and liquor stores",192,945,670
+Worcester,2024,62,62,Health Care and Social Assistance,9449,74676,1321
+Worcester,2024,621,621,Ambulatory health care services,1271,19764,1569
+Worcester,2024,6211,6211,Offices of physicians,292,4128,2111
+Worcester,2024,6212,6212,Offices of dentists,320,2825,1416
+Worcester,2024,6213,6213,Offices of other health practitioners,321,2709,1041
+Worcester,2024,6214,6214,Outpatient care centers,132,4398,1802
+Worcester,2024,6215,6215,Medical and diagnostic laboratories,65,966,2711
+Worcester,2024,6216,6216,Home health care services,104,3918,1006
+Worcester,2024,6219,6219,Other ambulatory health care services,37,821,1221
+Worcester,2024,622,622,Hospitals,49,20909,1834
+Worcester,2024,6221,6221,General medical and surgical hospitals,34,18519,1869
+Worcester,2024,6222,6222,Psychiatric and substance abuse hospitals,9,1702,1664
+Worcester,2024,6223,6223,Other hospitals,6,688,1313
+Worcester,2024,623,623,Nursing and residential care facilities,417,15248,1034
+Worcester,2024,6231,6231,"Nursing care facilities, skilled nursing",61,6931,1095
+Worcester,2024,6232,6232,Residential mental health facilities,251,4263,1073
+Worcester,2024,6233,6233,"Continuing care, assisted living facilities",59,2197,740
+Worcester,2024,6239,6239,Other residential care facilities,46,1857,1067
+Worcester,2024,624,624,Social assistance,7712,18756,721
+Worcester,2024,6241,6241,Individual and family services,7463,13918,688
+Worcester,2024,6242,6242,Emergency and other relief services,41,1079,984
+Worcester,2024,6243,6243,Vocational rehabilitation services,30,1103,921
+Worcester,2024,6244,6244,Child day care services,178,2656,706

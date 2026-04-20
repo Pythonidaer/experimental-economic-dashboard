@@ -191,6 +191,45 @@ export type Database = {
         };
         Relationships: [];
       };
+      state_industry_details: {
+        Row: {
+          id: string;
+          region: string;
+          year: number;
+          naics_code: string;
+          naics_level: string;
+          industry: string;
+          establishments: number | null;
+          avg_monthly_employment: number | null;
+          avg_weekly_wage: number | null;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          region: string;
+          year: number;
+          naics_code: string;
+          naics_level: string;
+          industry: string;
+          establishments?: number | null;
+          avg_monthly_employment?: number | null;
+          avg_weekly_wage?: number | null;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          region?: string;
+          year?: number;
+          naics_code?: string;
+          naics_level?: string;
+          industry?: string;
+          establishments?: number | null;
+          avg_monthly_employment?: number | null;
+          avg_weekly_wage?: number | null;
+          created_at?: string;
+        };
+        Relationships: [];
+      };
     };
     Views: Record<string, never>;
     Functions: Record<string, never>;
@@ -210,3 +249,6 @@ export type StateExportProfileRow =
 
 export type StateIndustryRow =
   Database["public"]["Tables"]["state_industries"]["Row"];
+
+export type StateIndustryDetailRow =
+  Database["public"]["Tables"]["state_industry_details"]["Row"];

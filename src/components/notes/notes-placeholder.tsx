@@ -189,6 +189,17 @@ export function NotesPlaceholder() {
               It does <strong className="font-medium text-foreground">not</strong> represent
               current hiring activity or job openings.
             </p>
+            <p className="mt-2 text-muted-foreground">
+              <strong className="font-medium text-foreground">NAICS</strong> stands for{" "}
+              <strong className="font-medium text-foreground">
+                North American Industry Classification System
+              </strong>
+              , the standard industry coding framework used in U.S. economic datasets.
+            </p>
+            <p className="mt-2 text-muted-foreground">
+              Depending on the selected level, the chart can show broader industry groupings or
+              narrower subcategory detail.
+            </p>
           </section>
 
           <section aria-labelledby="notes-industry-limits">

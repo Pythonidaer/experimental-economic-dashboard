@@ -6,6 +6,7 @@ import { cn } from "@/lib/utils";
 import {
   type DashboardDataset,
 } from "@/components/layout/dashboard/dashboard-dataset-toggle";
+import { StateIndustryDetailsBarChart } from "@/components/charts/StateIndustryDetailsBarChart";
 import { StateIndustriesBarChart } from "@/components/charts/StateIndustriesBarChart";
 import { LaborUnemploymentByStateChartBody } from "@/features/economic-data/components/state-labor-unemployment-by-state-chart";
 import { StateExportProfilesByStateChartBody } from "@/features/economic-data/components/state-export-profiles-by-state-chart";
@@ -13,16 +14,21 @@ import { StateExportProfilesByStateChartBody } from "@/features/economic-data/co
 const CHART_HEADING_ID = "chart-heading";
 const CHART_SUMMARY_ID = "chart-summary";
 type ChartDataset = DashboardDataset | "industry";
+type IndustryChartSubview = "top-level" | "detailed";
 
 export function DashboardChartsPanel() {
   const [dataset, setDataset] = useState<ChartDataset>("exports");
+  const [industrySubview, setIndustrySubview] = useState<IndustryChartSubview>("top-level");
+  const [detailFiltersOpen, setDetailFiltersOpen] = useState(false);
 
   const summary = (() => {
     if (dataset === "labor") {
       return "Unemployment rate by state for the latest year available, sorted for quick comparison.";
     }
     if (dataset === "industry") {
-      return "Compare average monthly employment across selected industries in 2024 between Greater Boston and Worcester.";
+      return industrySubview === "top-level"
+        ? "Compare average monthly employment across selected industries in 2024 between Greater Boston and Worcester."
+        : "Explore detailed NAICS rows (2-digit through 4-digit) and compare average monthly employment by industry.";
     }
     return "State export buckets from Census origin-of-movement data (broad structure, not industries). Pick a bucket to compare states for their latest period in the table.";
   })();
@@ -39,8 +45,12 @@ export function DashboardChartsPanel() {
         {summary}
       </p>
 
-      <div className="mt-3" role="radiogroup" aria-label="Chart dataset">
-        <div className="inline-flex flex-wrap gap-2">
+      <div className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-2 sm:gap-x-5">
+        <div
+          aria-label="Chart dataset"
+          className="inline-flex flex-wrap items-center gap-2"
+          role="radiogroup"
+        >
           <ChartDatasetOption
             checked={dataset === "exports"}
             id="charts-dataset-exports"
@@ -60,6 +70,62 @@ export function DashboardChartsPanel() {
             onSelect={() => setDataset("industry")}
           />
         </div>
+
+        {dataset === "industry" ? (
+          <fieldset className="flex min-w-0 flex-1 flex-wrap items-center gap-2 sm:gap-2.5">
+            <div
+              className="inline-flex items-center gap-3 text-sm text-foreground"
+              role="radiogroup"
+              aria-label="Industry chart view"
+            >
+              <label
+                className={cn(
+                  "inline-flex cursor-pointer items-center gap-1.5 rounded-sm px-1 py-0.5",
+                  "focus-within:outline-none focus-within:ring-2 focus-within:ring-ring",
+                )}
+                htmlFor="chart-industry-view-top-level"
+              >
+                <input
+                  checked={industrySubview === "top-level"}
+                  className="h-4 w-4"
+                  id="chart-industry-view-top-level"
+                  name="chart-industry-view"
+                  type="radio"
+                  onChange={() => setIndustrySubview("top-level")}
+                />
+                <span className="text-sm">Top-level</span>
+              </label>
+              <label
+                className={cn(
+                  "inline-flex cursor-pointer items-center gap-1.5 rounded-sm px-1 py-0.5",
+                  "focus-within:outline-none focus-within:ring-2 focus-within:ring-ring",
+                )}
+                htmlFor="chart-industry-view-detailed"
+              >
+                <input
+                  checked={industrySubview === "detailed"}
+                  className="h-4 w-4"
+                  id="chart-industry-view-detailed"
+                  name="chart-industry-view"
+                  type="radio"
+                  onChange={() => setIndustrySubview("detailed")}
+                />
+                <span className="text-sm">Detailed</span>
+              </label>
+            </div>
+            {industrySubview === "detailed" ? (
+              <button
+                aria-controls="industry-detail-filters"
+                aria-expanded={detailFiltersOpen}
+                className="inline-flex min-h-10 items-center justify-center rounded-lg border border-border bg-background px-3 py-2 text-sm font-medium text-foreground transition-colors hover:bg-muted/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring sm:ml-auto"
+                type="button"
+                onClick={() => setDetailFiltersOpen((value) => !value)}
+              >
+                {detailFiltersOpen ? "Hide filters" : "Show filters"}
+              </button>
+            ) : null}
+          </fieldset>
+        ) : null}
       </div>
 
       <div className="mt-4">
@@ -73,21 +139,20 @@ export function DashboardChartsPanel() {
           />
         ) : dataset === "industry" ? (
           <section aria-label="Industry Employment in Greater Boston">
-            <IndustryChartContextPanel />
-            <div className="mt-4">
-              <h3 className="text-base font-semibold tracking-tight">
-                Industry Employment: Greater Boston vs Worcester
-              </h3>
-              <p className="mt-1 text-sm text-muted-foreground">
-                Average number of people employed each month in 2024 across selected industries in Greater Boston and Worcester.
-              </p>
+            {industrySubview === "top-level" ? (
+              <div className="mt-2">
+                <h3 className="text-base font-semibold tracking-tight">
+                  Industry Employment: Greater Boston vs Worcester
+                </h3>
+              </div>
+            ) : null}
+            <div className={industrySubview === "top-level" ? "mt-4" : "mt-1"}>
+              {industrySubview === "top-level" ? (
+                <StateIndustriesBarChart />
+              ) : (
+                <StateIndustryDetailsBarChart filtersOpen={detailFiltersOpen} />
+              )}
             </div>
-            <div className="mt-4">
-              <StateIndustriesBarChart />
-            </div>
-            <p className="mt-2 text-xs text-muted-foreground">
-              This reflects total employment levels, not current hiring demand.
-            </p>
           </section>
         ) : (
           <StateExportProfilesByStateChartBody
@@ -108,18 +173,34 @@ type ChartDatasetOptionProps = {
   label: string;
   checked: boolean;
   onSelect: () => void;
+  variant?: "default" | "subtle";
 };
 
-function ChartDatasetOption({ id, label, checked, onSelect }: ChartDatasetOptionProps) {
+function ChartDatasetOption({
+  id,
+  label,
+  checked,
+  onSelect,
+  variant = "default",
+}: ChartDatasetOptionProps) {
+  const isSubtle = variant === "subtle";
+
   return (
     <button
       aria-checked={checked}
       className={cn(
-        "inline-flex min-h-10 min-w-[5.5rem] items-center justify-center rounded-lg border px-3 py-2 text-sm font-medium transition-colors",
+        "inline-flex items-center justify-center border text-sm font-medium transition-colors",
         "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+        isSubtle
+          ? "min-h-8 min-w-[4.75rem] rounded-sm border-transparent px-2.5 py-1.5 text-xs"
+          : "min-h-10 min-w-[5.5rem] rounded-lg px-3 py-2",
         checked
-          ? "border-primary bg-primary text-primary-foreground"
-          : "border-border bg-background text-foreground hover:bg-muted/80",
+          ? isSubtle
+            ? "bg-background text-foreground shadow-sm"
+            : "border-primary bg-primary text-primary-foreground"
+          : isSubtle
+            ? "bg-transparent text-muted-foreground hover:bg-background/70 hover:text-foreground"
+            : "border-border bg-background text-foreground hover:bg-muted/80",
       )}
       id={id}
       role="radio"
@@ -131,32 +212,3 @@ function ChartDatasetOption({ id, label, checked, onSelect }: ChartDatasetOption
   );
 }
 
-function IndustryChartContextPanel() {
-  return (
-    <div className="space-y-2 rounded-lg border border-border/80 bg-muted/10 p-3 sm:p-3.5">
-      <p className="text-xs font-medium text-foreground">
-        Compare how employment levels differ by industry across the two regions in this
-        current dataset.
-      </p>
-      <div className="grid gap-1.5 rounded-md bg-background/70 px-3 py-2 text-xs sm:grid-cols-3">
-        <ContextItem label="Regions shown" value="Greater Boston, Worcester" />
-        <ContextItem label="Metric" value="Average monthly employees" />
-        <ContextItem label="Year" value="2024" />
-      </div>
-    </div>
-  );
-}
-
-type ContextItemProps = {
-  label: string;
-  value: string;
-};
-
-function ContextItem({ label, value }: ContextItemProps) {
-  return (
-    <div className="leading-snug">
-      <span className="font-medium text-foreground">{label}:</span>{" "}
-      <span className="text-muted-foreground">{value}</span>
-    </div>
-  );
-}

@@ -1,44 +1,96 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 
 import { type DashboardDataset } from "@/components/layout/dashboard/dashboard-dataset-toggle";
 import { ViewEmpty } from "@/components/data-view/view-empty";
 import { ViewError } from "@/components/data-view/view-error";
 import { ViewLoading } from "@/components/data-view/view-loading";
 import { useStateExportProfiles } from "@/features/economic-data/hooks/use-state-export-profiles";
+import { useStateIndustryDetails } from "@/features/economic-data/hooks/use-state-industry-details";
 import { useStateIndustries } from "@/features/economic-data/hooks/use-state-industries";
 import { useStateLaborMetrics } from "@/features/economic-data/hooks/use-state-labor-metrics";
+import {
+  shapeIndustryDetailsWithParents,
+  toNaicsDigitLevel,
+} from "@/features/economic-data/utils/industry-hierarchy";
 import { cn } from "@/lib/utils";
 
 import { StateExportProfilesDataTable } from "./state-export-profiles-data-table";
+import { StateIndustryDetailsDataTable } from "./state-industry-details-data-table";
 import { StateIndustriesDataTable } from "./state-industries-data-table";
 import { StateLaborMetricsDataTable } from "./state-labor-metrics-data-table";
 import { StateMetricsTableFilter } from "./state-metrics-table-filter";
 
+type IndustrySubview = "top-level" | "detailed";
+
 export function DashboardMetricsTable() {
   const [dataset, setDataset] = useState<DashboardDataset | "industry">("exports");
+  const [industrySubview, setIndustrySubview] = useState<IndustrySubview>("top-level");
   const [laborFilter, setLaborFilter] = useState("");
   const [exportFilter, setExportFilter] = useState("");
   const [industryFilter, setIndustryFilter] = useState("");
+  const [industryDetailRegionFilter, setIndustryDetailRegionFilter] = useState("all");
+  const [industryDetailNaicsLevelFilter, setIndustryDetailNaicsLevelFilter] = useState("all");
+  const [industryDetailParentFilter, setIndustryDetailParentFilter] = useState("all");
 
   const laborQuery = useStateLaborMetrics(undefined, { enabled: dataset === "labor" });
   const exportQuery = useStateExportProfiles(undefined, { enabled: dataset === "exports" });
   const industryQuery = useStateIndustries({ year: 2024 }, { enabled: dataset === "industry" });
+  const industryDetailsQuery = useStateIndustryDetails(
+    { year: 2024 },
+    { enabled: dataset === "industry" && industrySubview === "detailed" },
+  );
 
   const active =
     dataset === "labor"
       ? laborQuery
       : dataset === "industry"
-        ? industryQuery
+        ? industrySubview === "top-level"
+          ? industryQuery
+          : industryDetailsQuery
         : exportQuery;
 
   const loadingMessage =
     dataset === "labor"
       ? "Loading labor figures…"
       : dataset === "industry"
-        ? "Loading industry figures…"
+        ? industrySubview === "top-level"
+          ? "Loading industry figures…"
+          : "Loading detailed industry figures…"
         : "Loading export profiles…";
+
+  const shapedIndustryDetails = useMemo(
+    () => shapeIndustryDetailsWithParents(industryDetailsQuery.data ?? []),
+    [industryDetailsQuery.data],
+  );
+
+  const industryDetailRegions = Array.from(
+    new Set(shapedIndustryDetails.map((row) => row.region.trim()).filter(Boolean)),
+  ).sort((a, b) => a.localeCompare(b));
+
+  const parentIndustryOptions = Array.from(
+    new Set(shapedIndustryDetails.map((row) => row.parent_industry ?? "Unmapped")),
+  ).sort((a, b) => a.localeCompare(b));
+
+  const filteredIndustryDetails = shapedIndustryDetails.filter((row) => {
+    if (industryDetailRegionFilter !== "all" && row.region !== industryDetailRegionFilter) {
+      return false;
+    }
+    if (industryDetailNaicsLevelFilter !== "all") {
+      const level = toNaicsDigitLevel(row.naics_level);
+      if (level !== industryDetailNaicsLevelFilter) {
+        return false;
+      }
+    }
+    if (industryDetailParentFilter !== "all") {
+      const parentIndustry = row.parent_industry ?? "Unmapped";
+      if (parentIndustry !== industryDetailParentFilter) {
+        return false;
+      }
+    }
+    return true;
+  });
 
   return (
     <section
@@ -98,8 +150,8 @@ export function DashboardMetricsTable() {
           <ViewEmpty description="No export data available for the selected dataset." />
         ) : null}
         {dataset === "industry" &&
-        industryQuery.isSuccess &&
-        industryQuery.data.length === 0 ? (
+        active.isSuccess &&
+        active.data.length === 0 ? (
           <ViewEmpty description="No industry data available for the selected dataset." />
         ) : null}
 
@@ -156,28 +208,105 @@ export function DashboardMetricsTable() {
           </>
         ) : null}
         {dataset === "industry" &&
-        industryQuery.isSuccess &&
-        industryQuery.data.length > 0 ? (
+        active.isSuccess &&
+        active.data.length > 0 ? (
           <>
             <p
               className="mt-3 max-w-2xl text-sm text-muted-foreground"
               id="table-industry-context"
             >
-              Industry employment and wage comparison for 2024 across Greater Boston and
-              Worcester.
+              {industrySubview === "top-level"
+                ? "Industry employment and wage comparison for 2024 across Greater Boston and Worcester."
+                : "Detailed NAICS rows (2-digit through 4-digit) for 2024 across Greater Boston and Worcester."}
             </p>
+            <div className="mt-3" role="radiogroup" aria-label="Industry table view">
+              <div className="inline-flex flex-wrap gap-2">
+                <TableDatasetOption
+                  checked={industrySubview === "top-level"}
+                  id="table-industry-view-top-level"
+                  label="Top-level"
+                  onSelect={() => setIndustrySubview("top-level")}
+                />
+                <TableDatasetOption
+                  checked={industrySubview === "detailed"}
+                  id="table-industry-view-detailed"
+                  label="Detailed NAICS"
+                  onSelect={() => setIndustrySubview("detailed")}
+                />
+              </div>
+            </div>
+            {industrySubview === "detailed" ? (
+              <div className="mt-3 flex flex-wrap items-end gap-3">
+                <label className="flex flex-col gap-1 text-sm">
+                  <span className="text-muted-foreground">Region</span>
+                  <select
+                    className="h-10 min-w-40 rounded-md border bg-background px-3 text-sm"
+                    value={industryDetailRegionFilter}
+                    onChange={(event) => setIndustryDetailRegionFilter(event.target.value)}
+                  >
+                    <option value="all">All regions</option>
+                    {industryDetailRegions.map((region) => (
+                      <option key={region} value={region}>
+                        {region}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+                <label className="flex flex-col gap-1 text-sm">
+                  <span className="text-muted-foreground">Parent industry</span>
+                  <select
+                    className="h-10 min-w-56 rounded-md border bg-background px-3 text-sm"
+                    value={industryDetailParentFilter}
+                    onChange={(event) => setIndustryDetailParentFilter(event.target.value)}
+                  >
+                    <option value="all">All parent industries</option>
+                    {parentIndustryOptions.map((parentIndustry) => (
+                      <option key={parentIndustry} value={parentIndustry}>
+                        {parentIndustry}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+                <label className="flex flex-col gap-1 text-sm">
+                  <span className="text-muted-foreground">NAICS level</span>
+                  <select
+                    className="h-10 min-w-36 rounded-md border bg-background px-3 text-sm"
+                    value={industryDetailNaicsLevelFilter}
+                    onChange={(event) => setIndustryDetailNaicsLevelFilter(event.target.value)}
+                  >
+                    <option value="all">All levels</option>
+                    <option value="2">2-digit</option>
+                    <option value="3">3-digit</option>
+                    <option value="4">4-digit</option>
+                  </select>
+                </label>
+              </div>
+            ) : null}
             <StateMetricsTableFilter
               id="table-industry-filter"
-              label="Filter by region, industry, or NAICS"
+              label={
+                industrySubview === "top-level"
+                  ? "Filter by region, industry, or NAICS"
+                  : "Filter by region, industry, NAICS, or level"
+              }
               value={industryFilter}
               onChange={setIndustryFilter}
             />
-            <StateIndustriesDataTable
-              aria-describedby="table-industry-context"
-              data={industryQuery.data}
-              globalFilter={industryFilter}
-              onGlobalFilterChange={setIndustryFilter}
-            />
+            {industrySubview === "top-level" ? (
+              <StateIndustriesDataTable
+                aria-describedby="table-industry-context"
+                data={industryQuery.data ?? []}
+                globalFilter={industryFilter}
+                onGlobalFilterChange={setIndustryFilter}
+              />
+            ) : (
+              <StateIndustryDetailsDataTable
+                aria-describedby="table-industry-context"
+                data={filteredIndustryDetails}
+                globalFilter={industryFilter}
+                onGlobalFilterChange={setIndustryFilter}
+              />
+            )}
           </>
         ) : null}
       </div>

@@ -1,4 +1,5 @@
 import type { StateExportProfilesFilter } from "@/features/economic-data/queries/state-export-profiles";
+import type { StateIndustryDetailsFilter } from "@/features/economic-data/queries/state-industry-details";
 import type { StateIndustriesFilter } from "@/features/economic-data/queries/state-industries";
 import type { StateLaborMetricsFilter } from "@/features/economic-data/queries/state-labor-metrics";
 import type { StateTradeMetricsFilter } from "@/features/economic-data/queries/state-trade-metrics";
@@ -42,6 +43,17 @@ export const economicDataQueryKeys = {
         ...economicDataQueryKeys.stateIndustries.root,
         "list",
         filter?.year ?? null,
+      ] as const,
+  },
+  stateIndustryDetails: {
+    root: ["state-industry-details"] as const,
+    list: (filter?: StateIndustryDetailsFilter) =>
+      [
+        ...economicDataQueryKeys.stateIndustryDetails.root,
+        "list",
+        filter?.year ?? null,
+        filter?.region ?? null,
+        filter?.naicsLevel ?? null,
       ] as const,
   },
   geo: {

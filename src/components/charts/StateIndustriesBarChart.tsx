@@ -125,7 +125,7 @@ export function StateIndustriesBarChart() {
           enableLabel={false}
           valueFormat={(value) => formatNumber(Number(value))}
           tooltip={({ id, data, value }) => (
-            <div className="rounded border border-border bg-popover px-3 py-2 text-xs text-popover-foreground shadow-md">
+            <div className="min-w-64 max-w-[min(34rem,85vw)] rounded border border-border bg-popover px-3 py-2 text-xs text-popover-foreground shadow-md">
               <div className="font-medium">
                 {fullIndustryByLabel[String(data.industry)] ?? String(data.industry)}
               </div>
